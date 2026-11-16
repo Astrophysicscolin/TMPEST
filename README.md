@@ -276,7 +276,7 @@ your own data from these surveys, cite the surveys, not this repository:
 | TESS | Ricker et al. 2015, JATIS 1, 014003, doi:10.1117/1.JATIS.1.1.014003 |
 | ZTF | Bellm et al. 2019, PASP 131, 018002, doi:10.1088/1538-3873/aaecbe; Masci et al. 2019, PASP 131, 018003, doi:10.1088/1538-3873/aae8ac |
 | SN 2011fe (via the Open Supernova Catalog) | Guillochon et al. 2017, ApJ 835, 64, doi:10.3847/1538-4357/835/1/64; spectra: Pereira et al. 2013, A&A 554, A27, doi:10.1051/0004-6361/201221008; photometry: Munari et al. 2013, New Astronomy 20, 30, doi:10.1016/j.newast.2012.09.003, and Richmond & Smith 2012, JAVSO 40, 872 |
-| BVR photometry of LX Leo, V354 UMa and MU Leo (not in `data/`; the planned base dataset for timing comparisons, text in `HOFFMAN.md`) | Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3; the data are in the AAVSO International Database |
+| BVR photometry of LX Leo, V354 UMa and MU Leo (`data/hoffman/`; the base dataset of `examples/latency.py`, paper text in `HOFFMAN.md`) | Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3; the data are in the AAVSO International Database |
 
 The archives (ESA Gaia Archive, MAST, IRSA) each ask for their own acknowledgement text in
 papers; take the current wording from the archive. Provenance of each file is in

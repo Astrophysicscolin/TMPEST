@@ -17,4 +17,3 @@ rust/target/
 *.so
 *.pyd
 *.dylib
-data/hoffman/

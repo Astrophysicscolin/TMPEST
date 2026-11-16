@@ -33,16 +33,17 @@ The same facts, per file and machine-readable, with a size and SHA-256 for each 
   The references, with DOIs, are in the Citing section of the top-level `README.md` and in
   `CITATION.cff`.
 
-## Hoffman et al. 2022 light curves (not in the repository)
+## Hoffman et al. 2022 light curves
 
-`examples/fetch_hoffman.py` downloads nine files into `data/hoffman/`, which is git-ignored:
-B, V and R differential photometry of LX Leo, MU Leo and V354 UMa, one night each, from the
-project page of Hoffman, Mazzola & Gokhale 2022 (JAAVSO 50, 3). They are in the AAVSO
-extended format. The column headed `MAG` appears to hold relative flux, not magnitudes (its
-values run from 0.02 to 2.0 and their ratios match the eclipse depths in the paper), and
-`examples/datasets.py` reads it that way; this has not been confirmed with the authors. The
-Julian dates fall in March 2019. They are not redistributed here because the terms for doing
-so have not been checked. `examples/latency.py` uses them.
+`data/hoffman/` holds nine files: B, V and R differential photometry of LX Leo, MU Leo and
+V354 UMa, one night each (81 to 188 points per band), from the project page of Hoffman,
+Mazzola & Gokhale 2022 (JAAVSO 50, 3). `examples/fetch_hoffman.py` downloads them again. They
+are in the AAVSO extended format and unchanged. The column headed `MAG` appears to hold
+relative flux, not magnitudes (its values run from 0.02 to 2.0 and their ratios match the
+eclipse depths in the paper), and `examples/datasets.py` reads it that way; this has not been
+confirmed with the authors. The Julian dates fall in March 2019. These are eclipsing
+binaries, so the light curve is signal: `examples/latency.py` divides out a Fourier fit
+before measuring noise.
 
 ## What each is good for
 

@@ -101,3 +101,120 @@ files:
     references:
       - doi: 10.1088/1538-3873/aaecbe
       - doi: 10.1088/1538-3873/aae8ac
+  - file: hoffman/LX-Leo-B-filter-Measurement.csv
+    object: "LX Leo"
+    content: "B-band differential photometry, one night, AAVSO extended format; the MAG column appears to hold relative flux"
+    survey: "NURO 31-inch telescope, Lowell Observatory (Hoffman, Mazzola & Gokhale 2022)"
+    archive: "https://gokhale.sites.truman.edu/asymmetries/"
+    retrieved: 2026-11-16
+    script: examples/fetch_hoffman.py
+    processing: "None; the file is as downloaded."
+    rows: 81
+    bytes: 8687
+    sha256: 0077fdfa86f159279f4f68a7e755d86b12371473ea40c3cc57fb5d73a6ccfa58
+    references:
+      - text: "Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3"
+  - file: hoffman/LX-Leo-R-filter-Measurements.csv
+    object: "LX Leo"
+    content: "R-band differential photometry, one night, AAVSO extended format; the MAG column appears to hold relative flux"
+    survey: "NURO 31-inch telescope, Lowell Observatory (Hoffman, Mazzola & Gokhale 2022)"
+    archive: "https://gokhale.sites.truman.edu/asymmetries/"
+    retrieved: 2026-11-16
+    script: examples/fetch_hoffman.py
+    processing: "None; the file is as downloaded."
+    rows: 82
+    bytes: 8794
+    sha256: c75cc905672f3e5369f1025301cad7316005bee520d376107dc8266d1cc9baa8
+    references:
+      - text: "Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3"
+  - file: hoffman/LX-Leo-V-filter-Measurement.csv
+    object: "LX Leo"
+    content: "V-band differential photometry, one night, AAVSO extended format; the MAG column appears to hold relative flux"
+    survey: "NURO 31-inch telescope, Lowell Observatory (Hoffman, Mazzola & Gokhale 2022)"
+    archive: "https://gokhale.sites.truman.edu/asymmetries/"
+    retrieved: 2026-11-16
+    script: examples/fetch_hoffman.py
+    processing: "None; the file is as downloaded."
+    rows: 82
+    bytes: 8805
+    sha256: 52639a3d36ad707e54d3cb69999759f196ade2262c3a1c1cf6f7f2118195fda7
+    references:
+      - text: "Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3"
+  - file: hoffman/MU-Leo-B-filter-Measurements.csv
+    object: "MU Leo"
+    content: "B-band differential photometry, one night, AAVSO extended format; the MAG column appears to hold relative flux"
+    survey: "NURO 31-inch telescope, Lowell Observatory (Hoffman, Mazzola & Gokhale 2022)"
+    archive: "https://gokhale.sites.truman.edu/asymmetries/"
+    retrieved: 2026-11-16
+    script: examples/fetch_hoffman.py
+    processing: "None; the file is as downloaded."
+    rows: 113
+    bytes: 11623
+    sha256: 2ad6a8f027d66611c8d494e83b0355b618aa86a0d78070b9037c0b81c2868f77
+    references:
+      - text: "Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3"
+  - file: hoffman/MU-Leo-R-filter-Measurements.csv
+    object: "MU Leo"
+    content: "R-band differential photometry, one night, AAVSO extended format; the MAG column appears to hold relative flux"
+    survey: "NURO 31-inch telescope, Lowell Observatory (Hoffman, Mazzola & Gokhale 2022)"
+    archive: "https://gokhale.sites.truman.edu/asymmetries/"
+    retrieved: 2026-11-16
+    script: examples/fetch_hoffman.py
+    processing: "None; the file is as downloaded."
+    rows: 113
+    bytes: 11278
+    sha256: 999d4196a6e2e30ea70281efa10bd7a1acdeac3a4b68de41f2bb1236621172f9
+    references:
+      - text: "Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3"
+  - file: hoffman/MU-Leo-V-filter-measurements.csv
+    object: "MU Leo"
+    content: "V-band differential photometry, one night, AAVSO extended format; the MAG column appears to hold relative flux"
+    survey: "NURO 31-inch telescope, Lowell Observatory (Hoffman, Mazzola & Gokhale 2022)"
+    archive: "https://gokhale.sites.truman.edu/asymmetries/"
+    retrieved: 2026-11-16
+    script: examples/fetch_hoffman.py
+    processing: "None; the file is as downloaded."
+    rows: 113
+    bytes: 11284
+    sha256: 03f7385bfe72591945258b8254e7a5fc2e40267bdf77b5bc4f8dbc18dfeb0eb2
+    references:
+      - text: "Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3"
+  - file: hoffman/V0354-UMa-B-filter-Measurements.csv
+    object: "V354 UMa"
+    content: "B-band differential photometry, one night, AAVSO extended format; the MAG column appears to hold relative flux"
+    survey: "NURO 31-inch telescope, Lowell Observatory (Hoffman, Mazzola & Gokhale 2022)"
+    archive: "https://gokhale.sites.truman.edu/asymmetries/"
+    retrieved: 2026-11-16
+    script: examples/fetch_hoffman.py
+    processing: "None; the file is as downloaded."
+    rows: 188
+    bytes: 22976
+    sha256: 0d7216338686f48d8f8eb5862a672a9c8063366779133a56bb235d181bd1cfbb
+    references:
+      - text: "Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3"
+  - file: hoffman/V0354-UMa-R-filter-Measurements.csv
+    object: "V354 UMa"
+    content: "R-band differential photometry, one night, AAVSO extended format; the MAG column appears to hold relative flux"
+    survey: "NURO 31-inch telescope, Lowell Observatory (Hoffman, Mazzola & Gokhale 2022)"
+    archive: "https://gokhale.sites.truman.edu/asymmetries/"
+    retrieved: 2026-11-16
+    script: examples/fetch_hoffman.py
+    processing: "None; the file is as downloaded."
+    rows: 188
+    bytes: 22978
+    sha256: ae893233025991f9e55b818cd9cf17c62aa81ddd376dd3d233d7c8e8c7bd6d9e
+    references:
+      - text: "Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3"
+  - file: hoffman/V0354-UMa-V-filter-Measurements.csv
+    object: "V354 UMa"
+    content: "V-band differential photometry, one night, AAVSO extended format; the MAG column appears to hold relative flux"
+    survey: "NURO 31-inch telescope, Lowell Observatory (Hoffman, Mazzola & Gokhale 2022)"
+    archive: "https://gokhale.sites.truman.edu/asymmetries/"
+    retrieved: 2026-11-16
+    script: examples/fetch_hoffman.py
+    processing: "None; the file is as downloaded."
+    rows: 188
+    bytes: 22975
+    sha256: e21f10f176de58b941aa3006f706a4d49144d80fe523f63226935f3dfe291a0d
+    references:
+      - text: "Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3"
