@@ -1,0 +1,34 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install
+        run: python -m pip install -e ".[dev,examples]"
+      - name: System report
+        run: python examples/system_report.py
+      - name: Tests on the Rust backend
+        run: python -m pytest -q
+      - name: Tests on the numpy backend
+        run: python -m pytest -q
+        env:
+          TMPEST_BACKEND: numpy
+      - name: Demo
+        run: python examples/demo.py
