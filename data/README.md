@@ -33,6 +33,17 @@ The same facts, per file and machine-readable, with a size and SHA-256 for each 
   The references, with DOIs, are in the Citing section of the top-level `README.md` and in
   `CITATION.cff`.
 
+## Hoffman et al. 2022 light curves (not in the repository)
+
+`examples/fetch_hoffman.py` downloads nine files into `data/hoffman/`, which is git-ignored:
+B, V and R differential photometry of LX Leo, MU Leo and V354 UMa, one night each, from the
+project page of Hoffman, Mazzola & Gokhale 2022 (JAAVSO 50, 3). They are in the AAVSO
+extended format. The column headed `MAG` appears to hold relative flux, not magnitudes (its
+values run from 0.02 to 2.0 and their ratios match the eclipse depths in the paper), and
+`examples/datasets.py` reads it that way; this has not been confirmed with the authors. The
+Julian dates fall in March 2019. They are not redistributed here because the terms for doing
+so have not been checked. `examples/latency.py` uses them.
+
 ## What each is good for
 
 - **Gaia**: three bands at matched times, about 40 points each. Sparse; shows the

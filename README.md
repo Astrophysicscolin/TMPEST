@@ -247,6 +247,15 @@ profile then carries white noise per channel with no width scaling.
   the variogram fit and is the long-baseline value. It is not the sample scatter of the
   data: on the same two sources the real G-band scatter was 1.18 and 0.89 times it. A
   synthetic series no longer than a few `tau` also shows less scatter than that total.
+- Wavelength coherence is only measured from epochs that count as simultaneous. The default
+  `match_tol` is a quarter of the shorter cadence, which is too strict for a camera that
+  cycles filters: the bands are then offset by a third of the cadence, almost no epochs
+  pair up, and the noise is treated as unshared. On BVR light curves taken that way
+  (Hoffman et al. 2022) the default found no shared noise where the bands correlate at 0.2
+  to 0.5; `match_tol` of half the cadence recovered it. Check `profile.corr` and set
+  `match_tol` for interleaved filters.
+- `catalog` has a fixed cost of about 12 ms however small the input, almost all of it the
+  grid search for the wavelength coherence.
 - Three overlapping broad bands constrain `alpha` and `ell` weakly. Spectra need at least
   `min_points` epochs to be catalogued; a single spectrum can be a target but not a source.
 - Noise is multiplicative on the flux, so it does not add photon noise in the cores of deep
@@ -272,6 +281,27 @@ your own data from these surveys, cite the surveys, not this repository:
 The archives (ESA Gaia Archive, MAST, IRSA) each ask for their own acknowledgement text in
 papers; take the current wording from the archive. Provenance of each file is in
 `data/README.md`.
+
+### Software and comparison methods
+
+TMPEST is built on NumPy (Harris et al. 2020, Nature 585, 357, doi:10.1038/s41586-020-2649-2),
+and its figures on Matplotlib (Hunter 2007, Computing in Science & Engineering 9, 90,
+doi:10.1109/MCSE.2007.55).
+
+`examples/latency.py` times TMPEST against four other ways of putting measured noise on
+synthetic spectra. No outside package is run: each is a short NumPy version of the method,
+written in that script, so its timings are not those of any published code. Cite the method:
+
+| Baseline in `examples/latency.py` | Method | Cite |
+|---|---|---|
+| white Gaussian | Independent Gaussian noise per pixel, scaled to the band scatter | none; the standard simple case |
+| block bootstrap | Resampling the real residuals in contiguous blocks | Efron 1979, Annals of Statistics 7, 1, doi:10.1214/aos/1176344552; Kunsch 1989, Annals of Statistics 17, 1217, doi:10.1214/aos/1176347265 |
+| Timmer-Koenig | Simulating a series from a fitted power-law spectrum | Timmer & Koenig 1995, A&A 300, 707 |
+| dense GP | Gaussian process with an exponential kernel, by Cholesky factorisation | Rasmussen & Williams 2006, Gaussian Processes for Machine Learning, MIT Press, doi:10.7551/mitpress/3206.001.0001 |
+
+The usual fast Gaussian-process package in astronomy is celerite (Foreman-Mackey et al. 2017,
+AJ 154, 220, doi:10.3847/1538-3881/aa9332). It is not benchmarked here and would be much
+faster than the dense version above.
 
 ## Licence
 

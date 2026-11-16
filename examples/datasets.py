@@ -6,6 +6,7 @@ import numpy as np
 import tmpest as tp
 
 DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data")
+AAVSO_BANDS = {"B": "johnson_B", "V": "johnson_V", "R": "cousins_R"}
 
 
 def _rows(path):
@@ -59,6 +60,29 @@ def read_wide_spectra_csv(path):
     table = np.genfromtxt(path, delimiter=",", skip_header=1)
     time = np.array([float(h.split("_")[1]) for h in header[1:]])
     return tp.Spectra(table[:, 0], table[:, 1:].T, time)
+
+
+def read_aavso_flux_csv(paths):
+    time, flux = {}, {}
+    for path in paths:
+        with open(path) as fh:
+            rows = [line.split(",") for line in fh.read().splitlines() if line and not line.startswith("#")]
+        band = AAVSO_BANDS[rows[0][4]]
+        t = np.array([float(r[1]) for r in rows])
+        f = np.array([float(r[2]) for r in rows])
+        order = np.argsort(t, kind="stable")
+        time[band] = t[order]
+        flux[band] = f[order] / f.max()
+    names = sorted(time, key=lambda b: tp.BANDS[b][0])
+    return tp.Photometry({b: time[b] for b in names}, {b: flux[b] for b in names})
+
+
+def read_hoffman(star):
+    folder = os.path.join(DATA, "hoffman")
+    paths = sorted(os.path.join(folder, f) for f in os.listdir(folder) if f.startswith(star) and f.endswith(".csv"))
+    if not paths:
+        raise FileNotFoundError(f"no files for {star} in {folder}; run examples/fetch_hoffman.py first")
+    return read_aavso_flux_csv(paths)
 
 
 def load(name):

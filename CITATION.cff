@@ -134,3 +134,77 @@ references:
     year: 2013
     doi: 10.1016/j.newast.2012.09.003
     notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Harris
+        given-names: "C. R."
+    title: "Array programming with NumPy"
+    journal: "Nature"
+    volume: "585"
+    start: "357"
+    year: 2020
+    doi: 10.1038/s41586-020-2649-2
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Hunter
+        given-names: "J. D."
+    title: "Matplotlib: A 2D Graphics Environment"
+    journal: "Computing in Science & Engineering"
+    volume: "9"
+    start: "90"
+    year: 2007
+    doi: 10.1109/MCSE.2007.55
+  - type: article
+    authors:
+      - family-names: Efron
+        given-names: "B."
+    title: "Bootstrap Methods: Another Look at the Jackknife"
+    journal: "The Annals of Statistics"
+    volume: "7"
+    start: "1"
+    year: 1979
+    doi: 10.1214/aos/1176344552
+  - type: article
+    authors:
+      - family-names: Kunsch
+        given-names: "H. R."
+    title: "The Jackknife and the Bootstrap for General Stationary Observations"
+    journal: "The Annals of Statistics"
+    volume: "17"
+    start: "1217"
+    year: 1989
+    doi: 10.1214/aos/1176347265
+  - type: article
+    authors:
+      - family-names: Timmer
+        given-names: "J."
+      - family-names: Koenig
+        given-names: "M."
+    title: "On generating power law noise"
+    journal: "Astronomy & Astrophysics"
+    volume: "300"
+    start: "707"
+    year: 1995
+  - type: article
+    authors:
+      - family-names: Foreman-Mackey
+        given-names: "D."
+    title: "Fast and Scalable Gaussian Process Modeling with Applications to Astronomical Time Series"
+    journal: "The Astronomical Journal"
+    volume: "154"
+    start: "220"
+    year: 2017
+    doi: 10.3847/1538-3881/aa9332
+    notes: "First author only; the DOI gives the full author list."
+  - type: book
+    authors:
+      - family-names: Rasmussen
+        given-names: "C. E."
+      - family-names: Williams
+        given-names: "C. K. I."
+    title: "Gaussian Processes for Machine Learning"
+    publisher:
+      name: "MIT Press"
+    year: 2006
+    doi: 10.7551/mitpress/3206.001.0001
