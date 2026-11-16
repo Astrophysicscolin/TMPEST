@@ -1,0 +1,103 @@
+schema: 1
+recorded: 2026-11-16
+note: "Public survey data redistributed for manual checks only. No test depends on these files. Cite the surveys, not this repository. A null value means the fact was not recorded, not that it does not exist."
+files:
+  - file: sn2011fe_photometry.csv
+    object: "SN 2011fe"
+    content: "B V Rc Ic magnitudes, long format"
+    survey: "Open Supernova Catalog"
+    archive: "astrocatalogs/sne-2010-2014 on GitHub"
+    retrieved: 2026-11-15
+    script: examples/fetch_data.py
+    processing: "Photometry of Munari et al. 2013 (telescope ANS 61 only) and Richmond & Smith 2012; the reference column says which."
+    rows: 630
+    bytes: 28774
+    sha256: 52e654f1ab0f57429b69fbea6142620825470906d7558acc7a9e993313bcbaa8
+    references:
+      - doi: 10.3847/1538-4357/835/1/64
+      - doi: 10.1016/j.newast.2012.09.003
+      - text: "Richmond & Smith 2012, JAVSO 40, 872 (bibcode 2012JAVSO..40..872R)"
+  - file: sn2011fe_spectra.csv
+    object: "SN 2011fe"
+    content: "flux-calibrated spectra, 32 epochs x 630 wavelengths, 335-964 nm"
+    survey: "Open Supernova Catalog"
+    archive: "astrocatalogs/sne-2010-2014 on GitHub"
+    retrieved: 2026-11-15
+    script: examples/fetch_data.py
+    processing: "The 32 SNIFS spectra of Pereira et al. 2013 (Nearby Supernova Factory), rebinned from about 0.24 nm to 1 nm by averaging."
+    rows: 630
+    bytes: 266953
+    sha256: b42548635ff26a1d4ba5de6ce24c47686b6f26df71274c73bb7f5f3941e0c087
+    references:
+      - doi: 10.3847/1538-4357/835/1/64
+      - doi: 10.1051/0004-6361/201221008
+  - file: gaia_dr3_1342277958330527360.csv
+    object: "Gaia DR3 source_id 1342277958330527360"
+    content: "epoch photometry, G BP RP flux, 49 transits"
+    survey: "Gaia DR3"
+    archive: "ESA Gaia Archive"
+    retrieved: null
+    script: null
+    processing: "Copied by the author, with unused columns dropped, from files pulled from the public archive for another project. Not downloaded for this repository; the retrieval date and the exact query were not recorded."
+    rows: 49
+    bytes: 8942
+    sha256: 835e5c75fc4884aa5abf6ded8f6b6f2b10e54f26c0517162cf41ed4980f7d0db
+    references:
+      - doi: 10.1051/0004-6361/201629272
+      - doi: 10.1051/0004-6361/202243940
+      - doi: 10.1051/0004-6361/202244242
+  - file: gaia_dr3_4368996662288843264.csv
+    object: "Gaia DR3 source_id 4368996662288843264"
+    content: "epoch photometry, G BP RP flux, 42 transits"
+    survey: "Gaia DR3"
+    archive: "ESA Gaia Archive"
+    retrieved: null
+    script: null
+    processing: "Copied by the author, with unused columns dropped, from files pulled from the public archive for another project. Not downloaded for this repository; the retrieval date and the exact query were not recorded."
+    rows: 42
+    bytes: 7903
+    sha256: 961c0d1bf9fff4a3c43ff0e6f1fdd07dc1b6c33d4b5cf3e1bc23ce509c82aa7c
+    references:
+      - doi: 10.1051/0004-6361/201629272
+      - doi: 10.1051/0004-6361/202243940
+      - doi: 10.1051/0004-6361/202244242
+  - file: kepler_kic10002567.csv
+    object: "KIC 10002567"
+    content: "long-cadence light curve, normalised flux"
+    survey: "Kepler"
+    archive: "MAST, through lightkurve"
+    retrieved: null
+    script: null
+    processing: "Copied by the author, with unused columns dropped, from files pulled from the public archive for another project. Not downloaded for this repository; the retrieval date and the exact query were not recorded."
+    rows: 1626
+    bytes: 70586
+    sha256: 8c7e06d4931c74e5585a1631925f865a4adad0ee184b8b6c877021933161fef1
+    references:
+      - doi: 10.1126/science.1185402
+  - file: tess_141826334.csv
+    object: "TESS object id 141826334"
+    content: "light curve, normalised flux"
+    survey: "TESS"
+    archive: "MAST, through lightkurve"
+    retrieved: null
+    script: null
+    processing: "Copied by the author, with unused columns dropped, from files pulled from the public archive for another project. Not downloaded for this repository; the retrieval date and the exact query were not recorded."
+    rows: 1062
+    bytes: 45236
+    sha256: c15ec8059fece8110ad0b6911b991761d02d4c8c7de5f0ee8dcd809fecc1ba9b
+    references:
+      - doi: 10.1117/1.JATIS.1.1.014003
+  - file: ztf_1721114100000000.csv
+    object: "ZTF object id 1721114100000000"
+    content: "g-band magnitudes"
+    survey: "ZTF"
+    archive: "IRSA"
+    retrieved: null
+    script: null
+    processing: "Copied by the author, with unused columns dropped, from files pulled from the public archive for another project. Not downloaded for this repository; the retrieval date and the exact query were not recorded."
+    rows: 19
+    bytes: 870
+    sha256: 2607d7638bf0f967a30085620ab95725130b268cac475a6c4f01f27f545c17d6
+    references:
+      - doi: 10.1088/1538-3873/aaecbe
+      - doi: 10.1088/1538-3873/aae8ac

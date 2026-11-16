@@ -1,0 +1,136 @@
+cff-version: 1.2.0
+message: "If you use TMPEST, please cite it as below, and cite the surveys whose data you use."
+type: software
+title: "TMPEST: Transfer of Multimodal Perturbations upon Emulated Spectra and Time series"
+version: 1.4.0
+license: BSD-3-Clause
+authors:
+  - family-names: Harrison
+    given-names: Colin
+    affiliation: Florida Institute of Technology
+keywords:
+  - astronomy
+  - photometry
+  - spectroscopy
+  - noise
+  - time series
+references:
+  - type: article
+    authors:
+      - name: "Gaia Collaboration"
+    title: "The Gaia mission"
+    journal: "Astronomy & Astrophysics"
+    volume: "595"
+    start: "A1"
+    year: 2016
+    doi: 10.1051/0004-6361/201629272
+  - type: article
+    authors:
+      - name: "Gaia Collaboration"
+    title: "Gaia Data Release 3: Summary of the content and survey properties"
+    journal: "Astronomy & Astrophysics"
+    volume: "674"
+    start: "A1"
+    year: 2023
+    doi: 10.1051/0004-6361/202243940
+  - type: article
+    authors:
+      - family-names: Eyer
+        given-names: "L."
+    title: "Gaia Data Release 3: Summary of the variability processing and analysis"
+    journal: "Astronomy & Astrophysics"
+    volume: "674"
+    start: "A13"
+    year: 2023
+    doi: 10.1051/0004-6361/202244242
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Borucki
+        given-names: "W. J."
+    title: "Kepler Planet-Detection Mission: Introduction and First Results"
+    journal: "Science"
+    volume: "327"
+    start: "977"
+    year: 2010
+    doi: 10.1126/science.1185402
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Ricker
+        given-names: "G. R."
+    title: "Transiting Exoplanet Survey Satellite (TESS)"
+    journal: "Journal of Astronomical Telescopes, Instruments, and Systems"
+    volume: "1"
+    start: "014003"
+    year: 2015
+    doi: 10.1117/1.JATIS.1.1.014003
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Bellm
+        given-names: "E. C."
+    title: "The Zwicky Transient Facility: System Overview, Performance, and First Results"
+    journal: "Publications of the Astronomical Society of the Pacific"
+    volume: "131"
+    start: "018002"
+    year: 2019
+    doi: 10.1088/1538-3873/aaecbe
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Masci
+        given-names: "F. J."
+    title: "The Zwicky Transient Facility: Data Processing, Products, and Archive"
+    journal: "Publications of the Astronomical Society of the Pacific"
+    volume: "131"
+    start: "018003"
+    year: 2019
+    doi: 10.1088/1538-3873/aae8ac
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Hoffman
+        given-names: Lauren
+      - family-names: Mazzola
+        given-names: Vince
+      - family-names: Gokhale
+        given-names: Vayujeet
+    title: "Light Curve Analysis of Eclipsing Binary Stars LX Leo, V345 UMa, and MU Leo"
+    journal: "Journal of the American Association of Variable Star Observers"
+    volume: "50"
+    start: "3"
+    year: 2022
+  - type: article
+    authors:
+      - family-names: Guillochon
+        given-names: "J."
+    title: "An Open Catalog for Supernova Data"
+    journal: "The Astrophysical Journal"
+    volume: "835"
+    start: "64"
+    year: 2017
+    doi: 10.3847/1538-4357/835/1/64
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Pereira
+        given-names: "R."
+    title: "Spectrophotometric time series of SN 2011fe from the Nearby Supernova Factory"
+    journal: "Astronomy & Astrophysics"
+    volume: "554"
+    start: "A27"
+    year: 2013
+    doi: 10.1051/0004-6361/201221008
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Munari
+        given-names: "U."
+    title: "BVRI lightcurves of supernovae SN 2011fe in M101, SN 2012aw in M95, and SN 2012cg in NGC 4424"
+    journal: "New Astronomy"
+    volume: "20"
+    start: "30"
+    year: 2013
+    doi: 10.1016/j.newast.2012.09.003
+    notes: "First author only; the DOI gives the full author list."
