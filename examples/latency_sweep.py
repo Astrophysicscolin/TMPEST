@@ -18,6 +18,15 @@ BUDGET = 20.0  # [s]
 GP_MEASURE_MAX = 1000
 GP_APPLY_MAX = 3000
 LABEL_GAP = 0.045
+RED = "--red" in sys.argv
+RED_FRACTION = 0.5
+TAU = 20.0 * CADENCE  # [d]
+PIXELS = "--pixels" in sys.argv
+PIXEL_SIZES = [100, 300, 1000, 3000, 10000]
+PIXEL_EPOCHS = 1000
+CASES = [(PIXEL_EPOCHS, p) for p in PIXEL_SIZES] if PIXELS else [(n, N_PIXELS) for n in SIZES]
+AXIS = "pixels" if PIXELS else "epochs"
+SUFFIX = ("_red" if RED else "") + ("_pixels" if PIXELS else "")
 
 
 def residuals(n, rng):
@@ -26,6 +35,10 @@ def residuals(n, rng):
     times = [CADENCE * np.arange(n) + OFFSET * b for b in range(len(names))]
     resids = [SIGMA[name] * (np.sqrt(SHARED) * common + np.sqrt(1.0 - SHARED) * rng.standard_normal(n))
               for name in names]
+    if RED:
+        red = tp.ou_filter(rng.standard_normal(n), times[0], TAU)
+        resids = [np.sqrt(1.0 - RED_FRACTION) * r + np.sqrt(RED_FRACTION) * SIGMA[name] * red
+                  for r, name in zip(resids, names)]
     lam = np.array([tp.BANDS[name][0] for name in names])
     width = np.array([tp.BANDS[name][1] for name in names])
     return tp.Residuals(times, [r - r.mean() for r in resids], lam, width, names, "photometry")
@@ -46,10 +59,10 @@ def clock(fn):
 
 def run():
     rows = []
-    for n in SIZES:
+    for n, pixels in CASES:
         rng = np.random.default_rng(SEED)
         res = residuals(n, rng)
-        target = tp.Spectra(np.linspace(LAMBDA[0], LAMBDA[1], N_PIXELS), np.ones((n, N_PIXELS)), res.time[1])
+        target = tp.Spectra(np.linspace(LAMBDA[0], LAMBDA[1], pixels), np.ones((n, pixels)), res.time[1])
         for name in METHODS:
             measure, apply = PAIRS[name]
             backends = ["rust", "numpy"] if name == "TMPEST" and tp.rust_available() else ["numpy"]
@@ -61,9 +74,9 @@ def run():
                 model = PAIRS[name][0](res) if not skip_measure else [(SIGMA[b] ** 2, 0.5, 10.0 * CADENCE) for b in res.names]
                 t_measure = np.nan if skip_measure else clock(lambda: measure(res))
                 t_apply = np.nan if skip_apply else clock(lambda: apply(model, res, target, rng))
-                rows.append({"epochs": n, "pixels": N_PIXELS, "method": name, "backend": backend,
+                rows.append({"epochs": n, "pixels": pixels, "method": name, "backend": backend,
                              "measure_ms": 1e3 * t_measure, "apply_ms": 1e3 * t_apply})
-                print(f"{n:>7d}  {name:<16}{backend:<7}{1e3 * t_measure:>12.3f}{1e3 * t_apply:>12.3f}")
+                print(f"{n:>7d}{pixels:>7d}  {name:<16}{backend:<7}{1e3 * t_measure:>12.3f}{1e3 * t_apply:>12.3f}")
         if tp.rust_available():
             tp.set_backend("rust")
     return rows
@@ -71,7 +84,7 @@ def run():
 
 def save(rows):
     os.makedirs(OUT, exist_ok=True)
-    path = os.path.join(OUT, "latency_sweep.csv")
+    path = os.path.join(OUT, f"latency_sweep{SUFFIX}.csv")
     with open(path, "w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(rows[0]))
         writer.writeheader()
@@ -92,7 +105,7 @@ def figure(rows):
                 sel = [r for r in rows if r["method"] == name and r["backend"] == backend and np.isfinite(r[column])]
                 if not sel:
                     continue
-                x = [r["epochs"] for r in sel]
+                x = [r[AXIS] for r in sel]
                 y = [r[column] for r in sel]
                 ax.plot(x, y, color=color, linestyle=style, linewidth=2, marker="o", markersize=5)
                 ends.append([y[-1], x[-1], f"{name} ({backend})" if name == "TMPEST" else name])
@@ -106,17 +119,18 @@ def figure(rows):
             y_text = max(y_end, y_text * gap)
             ax.text(x_end * 1.12, y_text, label, va="center", ha="left", fontsize=8)
         ax.set_xlim(right=ax.get_xlim()[1] * 9.0)
-        ax.set_xlabel("epochs per band")
+        ax.set_xlabel("pixels" if PIXELS else "epochs per band")
         ax.set_ylabel("median time per call [ms]")
         ax.set_title(title, loc="left")
         ax.grid(color="0.9", linewidth=0.8)
         ax.set_axisbelow(True)
         for side in ("top", "right"):
             ax.spines[side].set_visible(False)
-    fig.suptitle(f"Scaling with the number of epochs, three bands, {N_PIXELS} pixels (simulated residuals)",
+    scope = f"pixels, three bands, {PIXEL_EPOCHS} epochs" if PIXELS else f"epochs, three bands, {N_PIXELS} pixels"
+    fig.suptitle(f"Scaling with the number of {scope} (simulated {'red' if RED else 'white'} residuals)",
                  x=0.01, y=0.99, ha="left")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
-    path = os.path.join(OUT, "latency_sweep.png")
+    path = os.path.join(OUT, f"latency_sweep{SUFFIX}.png")
     fig.savefig(path, dpi=160)
     print(f"[SAVE] {path}")
 
