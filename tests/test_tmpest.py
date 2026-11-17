@@ -104,6 +104,23 @@ def test_time_white_but_wavelength_coherent_noise_survives_band_integration():
         assert abs(got / direct - 1.0) < 0.3
 
 
+def test_shared_red_noise_stays_coherent_when_tau_reaches_the_baseline():
+    names = ["gaia_G", "gaia_BP", "gaia_RP"]
+    t = np.linspace(0.0, 40.0, 40)
+    clean = tp.Photometry({n: t.copy() for n in names}, {n: np.full(40, 1000.0) for n in names})
+    truth = truth_profile(red_amp=5e-3)
+    truth.tau = 40.0
+    ratios = []
+    for seed in range(10):
+        rng = np.random.default_rng(seed)
+        noisy = tp.apply(truth, clean, rng)
+        prof = tp.catalog(noisy)
+        draws = [tp.draw(prof, clean, rng) for _ in range(20)]
+        real = np.corrcoef(noisy.flux["gaia_BP"], noisy.flux["gaia_RP"])[0, 1]
+        ratios.append(np.mean([np.corrcoef(d["gaia_BP"], d["gaia_RP"])[0, 1] for d in draws]) / real)
+    assert np.median(ratios) > 0.7
+
+
 def test_independent_bands_are_not_called_coherent():
     rng = np.random.default_rng(11)
     truth = truth_profile(red_amp=0.0)

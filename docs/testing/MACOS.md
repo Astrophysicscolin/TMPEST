@@ -117,7 +117,7 @@ your number of CPU cores.
 python -m pytest -q
 ```
 
-Expected: `43 passed` in a few seconds.
+Expected: `44 passed` in a few seconds.
 
 ## 8. Run the tests again with the pure-numpy fallback
 
@@ -125,7 +125,7 @@ Expected: `43 passed` in a few seconds.
 TMPEST_BACKEND=numpy python -m pytest -q
 ```
 
-Expected: `43 passed` again. The two backends are required to give identical numbers.
+Expected: `44 passed` again. The two backends are required to give identical numbers.
 
 ## 9. Run the demo
 

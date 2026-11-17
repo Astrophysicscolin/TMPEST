@@ -115,7 +115,7 @@ Expected: `rust extension built: True` and `active backend: rust`.
 python -m pytest -q
 ```
 
-Expected: `43 passed` in a few seconds.
+Expected: `44 passed` in a few seconds.
 
 ## 7. Run the tests again with the pure-numpy fallback
 
@@ -131,7 +131,7 @@ python -m pytest -q
 Remove-Item Env:TMPEST_BACKEND
 ```
 
-Expected: `43 passed` again. The two backends are required to give identical numbers.
+Expected: `44 passed` again. The two backends are required to give identical numbers.
 
 ## 8. Run the demo
 

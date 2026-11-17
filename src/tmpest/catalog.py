@@ -182,17 +182,17 @@ def _cadence(t):
     return float(np.median(steps)) if len(steps) else 0.0
 
 
-def _fit_coherence(u, cov, weight, red_var, white_var):
+def _fit_coherence(u, cov, weight, red_var, white_var, sample_var):
     total = red_var + white_var
     ia, ib = np.triu_indices(len(u), 1)
-    use = (weight[ia, ib] > 0) & (total[ia] > 0) & (total[ib] > 0)
+    use = (weight[ia, ib] > 0) & (total[ia] > 0) & (total[ib] > 0) & (sample_var[ia] > 0) & (sample_var[ib] > 0)
     if not use.any():
         return np.inf, 0.0, False
     ia, ib = ia[use], ib[use]
     self_dist = [np.abs(u[c][:, None] - u[c][None, :]) for c in range(len(u))]
     pair_dist = [np.abs(u[a][:, None] - u[b][None, :]) for a, b in zip(ia, ib)]
     norm = np.sqrt(total[ia] * total[ib])
-    target = cov[ia, ib] / norm
+    target = cov[ia, ib] / np.sqrt(sample_var[ia] * sample_var[ib])
     wt = weight[ia, ib]
     best = (np.inf, np.inf, 0.0)
     for ell in ELL_GRID:
@@ -249,7 +249,7 @@ def catalog(data, alpha=None, law="powerlaw", min_points=10, match_tol=None, sig
     else:
         tau = np.nan
 
-    total_var = red_var + white_var
+    sample_var = np.array([np.var(r) for r in resids])
     cov = np.full((n_ch, n_ch), np.nan)
     weight = np.zeros((n_ch, n_ch))
     cadence = [_cadence(t) for t in times]
@@ -261,9 +261,9 @@ def catalog(data, alpha=None, law="powerlaw", min_points=10, match_tol=None, sig
                 cov[a, b] = cov[b, a] = c
                 weight[a, b] = n
     with np.errstate(divide="ignore", invalid="ignore"):
-        corr = np.clip(cov / np.sqrt(np.outer(total_var, total_var)), -1.0, 1.0)
+        corr = np.clip(cov / np.sqrt(np.outer(sample_var, sample_var)), -1.0, 1.0)
     u = sub_points(lam, width, n_sub)
-    ell, phi, measured = _fit_coherence(u, cov, weight, red_var, white_var)
+    ell, phi, measured = _fit_coherence(u, cov, weight, red_var, white_var, sample_var)
 
     dilution = np.array([_kernel(u[c], u[c], ell) for c in range(n_ch)])
     red_point_var = red_var / dilution

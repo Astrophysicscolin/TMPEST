@@ -25,7 +25,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e ".[dev,examples]"     # compiles the Rust core, 1-3 minutes the first time
 python examples/system_report.py               # should say: active backend: rust
-python -m pytest -q                            # 43 tests, a few seconds
+python -m pytest -q                            # 44 tests, a few seconds
 python examples/demo.py                        # simulated source, both directions
 python examples/gallery.py                     # figures/ from the files in data/
 python examples/benchmark.py                   # numpy vs. Rust timings on this machine
@@ -118,9 +118,9 @@ three parts:
   sampling and is in real time units, so a profile from 30-minute data can be applied at any
   other cadence. A channel is only called red if a von Neumann test rejects white noise
   (`significance=2.5`); otherwise all its variance is white.
-- **Wavelength structure** comes from the covariance of channels observed at matching times.
-  It sets `ell` and the share of the white noise that is common to all channels
-  (`coherent_fraction`). This is what decides whether noise survives being averaged over a
+- **Wavelength structure** comes from the correlation of channels observed at matching times
+  (covariance over each channel's sample variance; `profile.corr`). It sets `ell` and the
+  share of the white noise that is common to all channels (`coherent_fraction`). This is what decides whether noise survives being averaged over a
   passband, so it matters most in the spectroscopy -> photometry direction.
 - **Chromatic law.** Each amplitude is a power law in wavelength,
   `sigma = amp * (lambda / lambda_ref)^alpha`, fitted across channels. `law="interp"` uses
@@ -223,12 +223,12 @@ profile then carries white noise per channel with no width scaling.
   across wavelength, fitted only to the channels where that component was detected, so a
   band can be given a component it never showed and lose one it did. On two real Gaia
   sources with about 40 epochs (`data/`, 2000 seeds each), applying a catalogued profile
-  straight back to the same bands gave an rms scatter between 0.77 and 1.14 of the measured
+  straight back to the same bands gave an rms scatter between 0.78 and 1.14 of the measured
   total under the default law and between 0.85 and 1.27 under `law="interp"`, with the sign
   depending on the source. Neither law is uniformly better.
 - With few epochs a single transfer is a noisy draw. For those sources one realisation
-  landed within 30% of the measured scatter in 53 to 96% of 300 seeds going directly, and in
-  43 to 85% going through 40 synthetic spectral epochs and back. On the second route the
+  landed within 30% of the measured scatter in 55 to 96% of 300 seeds going directly, and in
+  44 to 85% going through 40 synthetic spectral epochs and back. On the second route the
   per-chunk red-noise test passes in only some chunks, and on one of the two sources the
   result came out 15 to 40% too noisy on average. Run several seeds and compare the band scatter with
   `profile.summary()`; `examples/roundtrip_seeds.py` does this for a Gaia file.
@@ -245,16 +245,16 @@ profile then carries white noise per channel with no width scaling.
   `match_tol` for interleaved filters.
 - `catalog` has a fixed cost of about 12 ms however small the input, almost all of it the
   grid search for the wavelength coherence.
-- From real fibre spectra the transfer keeps the band scatter but loses most of the
-  correlation between bands. On 40 LAMOST medium-resolution exposures of one eclipsing
-  binary, divided by ten comparison stars in the same exposures and spectrograph and by a
+- From real fibre spectra the transfer keeps the correlation between bands but comes out
+  about 20% too quiet. On 40 LAMOST medium-resolution exposures of one eclipsing binary,
+  divided by ten comparison stars in the same exposures and spectrograph and by a
   one-harmonic orbital fit (`examples/latency_spectra.py`), synthetic photometry in six narrow
-  bands had 0.87 of the real band scatter (0.72 to 1.00 band by band), but 0.44 of correlation
-  between neighbouring bands and 0.21 between the arms, where the data show 1.00 and 0.99. The
-  cause is the reported total above: the residual is dominated by fibre throughput that
-  wanders over the whole 391-day baseline, the variogram fit puts `tau` at the baseline, its
-  total is 2.4 times the sample variance, and the coherence fit then sees correlations of
-  about 0.42 instead of 1. Most of what is measured here is the instrument, not the star.
+  bands had 0.79 of the real band scatter (0.77 to 0.82 band by band), and correlations of
+  1.00 within an arm and 0.98 between the arms, where the data show 1.00 and 0.99. The residual
+  is dominated by fibre throughput that wanders over the whole 391-day baseline, so `tau`
+  sits at the baseline and the reported total is 2.4 times the sample variance (see above);
+  a single 40-epoch draw from such a process scatters less than its total. Most of what is
+  measured here is the instrument, not the star.
   Dividing each exposure by its own median instead (no comparison stars) leaves a continuum
   tilt that pivots inside each arm, which the model cannot represent (it has no negative
   correlation): band scatter then ranged from 0.45 to 2.87 times the real one.
