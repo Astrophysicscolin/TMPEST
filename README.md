@@ -256,6 +256,19 @@ profile then carries white noise per channel with no width scaling.
   `match_tol` for interleaved filters.
 - `catalog` has a fixed cost of about 12 ms however small the input, almost all of it the
   grid search for the wavelength coherence.
+- From real fibre spectra the transfer keeps the band scatter but loses most of the
+  correlation between bands. On 40 LAMOST medium-resolution exposures of one eclipsing
+  binary, divided by ten comparison stars in the same exposures and spectrograph and by a
+  one-harmonic orbital fit (`examples/latency_spectra.py`), synthetic photometry in six narrow
+  bands had 0.87 of the real band scatter (0.72 to 1.00 band by band), but 0.44 of correlation
+  between neighbouring bands and 0.21 between the arms, where the data show 1.00 and 0.99. The
+  cause is the reported total above: the residual is dominated by fibre throughput that
+  wanders over the whole 391-day baseline, the variogram fit puts `tau` at the baseline, its
+  total is 2.4 times the sample variance, and the coherence fit then sees correlations of
+  about 0.42 instead of 1. Most of what is measured here is the instrument, not the star.
+  Dividing each exposure by its own median instead (no comparison stars) leaves a continuum
+  tilt that pivots inside each arm, which the model cannot represent (it has no negative
+  correlation): band scatter then ranged from 0.45 to 2.87 times the real one.
 - Three overlapping broad bands constrain `alpha` and `ell` weakly. Spectra need at least
   `min_points` epochs to be catalogued; a single spectrum can be a target but not a source.
 - Noise is multiplicative on the flux, so it does not add photon noise in the cores of deep
@@ -277,6 +290,7 @@ your own data from these surveys, cite the surveys, not this repository:
 | ZTF | Bellm et al. 2019, PASP 131, 018002, doi:10.1088/1538-3873/aaecbe; Masci et al. 2019, PASP 131, 018003, doi:10.1088/1538-3873/aae8ac |
 | SN 2011fe (via the Open Supernova Catalog) | Guillochon et al. 2017, ApJ 835, 64, doi:10.3847/1538-4357/835/1/64; spectra: Pereira et al. 2013, A&A 554, A27, doi:10.1051/0004-6361/201221008; photometry: Munari et al. 2013, New Astronomy 20, 30, doi:10.1016/j.newast.2012.09.003, and Richmond & Smith 2012, JAVSO 40, 872 |
 | BVR photometry of LX Leo, V354 UMa and MU Leo (`data/hoffman/`; the base dataset of `examples/latency.py`, paper text in `HOFFMAN.md`) | Hoffman, Mazzola & Gokhale 2022, JAAVSO 50, 3; the data are in the AAVSO International Database |
+| LAMOST medium-resolution spectra of KIC 5444392 (not in `data/`; fetched by `examples/fetch_lamost.py`, used by `examples/latency_spectra.py`) | Cui et al. 2012, RAA 12, 1197, doi:10.1088/1674-4527/12/9/003; Zong et al. 2020, ApJS 251, 15, doi:10.3847/1538-4365/abbb2d; the target is from Kirk et al. 2016, AJ 151, 68, doi:10.3847/0004-6256/151/3/68, and was pointed to by Zhang et al. 2022, ApJS 258, 26, doi:10.3847/1538-4365/ac42d1 |
 
 The archives (ESA Gaia Archive, MAST, IRSA) each ask for their own acknowledgement text in
 papers; take the current wording from the archive. Provenance of each file is in

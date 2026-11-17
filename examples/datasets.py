@@ -1,4 +1,5 @@
 import csv
+import gzip
 import os
 
 import numpy as np
@@ -7,6 +8,7 @@ import tmpest as tp
 
 DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data")
 AAVSO_BANDS = {"B": "johnson_B", "V": "johnson_V", "R": "cousins_R"}
+FITS_TYPES = {"E": ">f4", "D": ">f8", "I": ">i2", "J": ">i4", "K": ">i8", "B": "u1"}
 
 
 def _rows(path):
@@ -83,6 +85,69 @@ def read_hoffman(star):
     if not paths:
         raise FileNotFoundError(f"no files for {star} in {folder}; run examples/fetch_hoffman.py first")
     return read_aavso_flux_csv(paths)
+
+
+def read_fits_tables(path):
+    opener = gzip.open if path.endswith(".gz") else open
+    with opener(path, "rb") as fh:
+        raw = fh.read()
+    tables, pos = [], 0
+    while pos < len(raw):
+        header = {}
+        done = False
+        while not done:
+            block = raw[pos:pos + 2880].decode("ascii", "replace")
+            pos += 2880
+            for i in range(0, 2880, 80):
+                card = block[i:i + 80]
+                if card.startswith("END"):
+                    done = True
+                    break
+                if card[8:10] == "= ":
+                    header[card[:8].strip()] = card[10:].split("/")[0].strip().strip("'").strip()
+        size = 0
+        if int(header.get("NAXIS", 0)) > 0:
+            size = abs(int(header["BITPIX"])) // 8
+            for k in range(1, int(header["NAXIS"]) + 1):
+                size *= int(header[f"NAXIS{k}"])
+        columns = {}
+        if header.get("XTENSION") == "BINTABLE":
+            fields = []
+            for k in range(1, int(header["TFIELDS"]) + 1):
+                form = header[f"TFORM{k}"]
+                count = int(form[:-1]) if form[:-1] else 1
+                fields.append((header[f"TTYPE{k}"], FITS_TYPES[form[-1]], (count,)))
+            rows = np.frombuffer(raw, dtype=np.dtype(fields), count=int(header["NAXIS2"]), offset=pos)
+            columns = {name: rows[name] for name, _, _ in fields}
+        tables.append((header, columns))
+        pos += (size + int(header.get("PCOUNT", 0)) + 2879) // 2880 * 2880
+    return tables
+
+
+def read_lamost_mrs(folder, min_snr=10.0, step=0.01, fiber=None, normalise=True):
+    arms = {"B": {}, "R": {}}
+    for name in sorted(os.listdir(folder)):
+        if not name.endswith((".fits", ".fits.gz")) or (fiber is not None and name[6:9] != fiber):
+            continue
+        for header, columns in read_fits_tables(os.path.join(folder, name))[1:]:
+            arm = header.get("EXTNAME", "")[:2]
+            if arm not in ("B-", "R-") or float(header["SNR"]) < min_snr:
+                continue
+            lam = 0.1 * columns["WAVELENGTH"][0].astype(float)
+            flux = columns["FLUX"][0].astype(float)
+            good = (columns["IVAR"][0] > 0) & (columns["PIXMASK"][0] == 0) & np.isfinite(flux)
+            if good.sum() < 0.5 * len(flux):
+                continue
+            arms[arm[0]][int(header["LMJM"])] = (lam[good], flux[good] / np.median(flux[good]) if normalise else flux[good])
+    epochs = sorted(set(arms["B"]) & set(arms["R"]))
+    grids, cubes = [], []
+    for arm in ("B", "R"):
+        lo = max(arms[arm][e][0][0] for e in epochs)
+        hi = min(arms[arm][e][0][-1] for e in epochs)
+        grid = np.arange(lo, hi, step)
+        grids.append(grid)
+        cubes.append(np.stack([np.interp(grid, *arms[arm][e]) for e in epochs]))
+    return tp.Spectra(np.concatenate(grids), np.concatenate(cubes, axis=1), np.array(epochs) / 1440.0)
 
 
 def load(name):

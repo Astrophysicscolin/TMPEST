@@ -208,3 +208,47 @@ references:
       name: "MIT Press"
     year: 2006
     doi: 10.7551/mitpress/3206.001.0001
+  - type: article
+    authors:
+      - family-names: Cui
+        given-names: "X.-Q."
+    title: "The Large Sky Area Multi-Object Fiber Spectroscopic Telescope (LAMOST)"
+    journal: "Research in Astronomy and Astrophysics"
+    volume: "12"
+    start: "1197"
+    year: 2012
+    doi: 10.1088/1674-4527/12/9/003
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Zong
+        given-names: "W."
+    title: "Phase II of the LAMOST-Kepler/K2 Survey. I. Time Series of Medium-resolution Spectroscopic Observations"
+    journal: "The Astrophysical Journal Supplement Series"
+    volume: "251"
+    start: "15"
+    year: 2020
+    doi: 10.3847/1538-4365/abbb2d
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Kirk
+        given-names: "B."
+    title: "Kepler Eclipsing Binary Stars. VII. The Catalog of Eclipsing Binaries Found in the Entire Kepler Data Set"
+    journal: "The Astronomical Journal"
+    volume: "151"
+    start: "68"
+    year: 2016
+    doi: 10.3847/0004-6256/151/3/68
+    notes: "First author only; the DOI gives the full author list."
+  - type: article
+    authors:
+      - family-names: Zhang
+        given-names: "B."
+    title: "The Spectroscopic Binaries from the LAMOST Medium-resolution Survey. I. Searching for Double-lined Spectroscopic Binaries with a Convolutional Neural Network"
+    journal: "The Astrophysical Journal Supplement Series"
+    volume: "258"
+    start: "26"
+    year: 2022
+    doi: 10.3847/1538-4365/ac42d1
+    notes: "First author only; the DOI gives the full author list."

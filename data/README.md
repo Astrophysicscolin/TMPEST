@@ -45,6 +45,31 @@ confirmed with the authors. The Julian dates fall in March 2019. These are eclip
 binaries, so the light curve is signal: `examples/latency.py` divides out a Fourier fit
 before measuring noise.
 
+## LAMOST spectra (not in the repository)
+
+`examples/fetch_lamost.py` downloads ten observation files (about 4 MB) into `data/lamost/`,
+which is git-ignored: LAMOST DR9 v2.0 medium-resolution spectra (R about 7500) of the
+*Kepler* eclipsing binary KIC 5444392 (period 1.5 d), 41 single 20-minute exposures per arm
+on ten nights between May 2019 and June 2020. The blue arm covers 490 to 540 nm and the red
+arm 628 to 685 nm, with nothing in between. `examples/datasets.py` reads the single exposures
+with its own small FITS reader, drops those with a signal-to-noise ratio under 10 and those
+with more than half their pixels flagged, and puts them on a common 0.01 nm grid. By default
+it divides each arm of each exposure by its median; `normalise=False` keeps the raw flux. The
+observation ids are listed in the fetch script; they came from a 5 arcsecond position search
+of the medium-resolution catalogue.
+
+The same script downloads comparison stars (about 67 MB, into `data/lamost/comparison/`):
+the stars in fibres 92 to 112 of the same spectrograph, which held the same star on all ten
+nights (an observation id is the night's prefix, two digits of spectrograph and three of
+fibre; fibres 102, 103, 105, 109 and 112 are absent or the target). Ten of them pass the
+signal-to-noise cut in both arms at least once. The spectra are not flux-calibrated, so
+`examples/latency_spectra.py` works like differential photometry: it divides the target's
+raw flux by the median over comparison stars of each one's flux relative to its own median
+spectrum, then by a Fourier fit in orbital phase at the period of Kirk et al. 2016
+(1.5195284 d), with the number of harmonics chosen by leave-one-night-out prediction error
+(one). What remains is dominated by the throughput of the target's own fibre, which the
+comparison stars do not share: 23 per cent scatter, nearly the same at every wavelength.
+
 ## What each is good for
 
 - **Gaia**: three bands at matched times, about 40 points each. Sparse; shows the
