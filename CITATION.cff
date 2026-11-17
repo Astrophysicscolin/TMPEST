@@ -4,6 +4,8 @@ type: software
 title: "TMPEST: Transfer of Multimodal Perturbations upon Emulated Spectra and Time series"
 version: 1.5.0
 license: BSD-3-Clause
+repository-code: "https://github.com/Astrophysicscolin/TMPEST"
+date-released: 2026-11-17
 authors:
   - family-names: Harrison
     given-names: Colin

@@ -27,8 +27,8 @@ classifiers = [
 dependencies = ["numpy>=1.21.6"]
 
 [project.urls]
-Repository = "https://github.com/Astrophysicscolin/tmpest"
-Issues = "https://github.com/Astrophysicscolin/tmpest/issues"
+Repository = "https://github.com/Astrophysicscolin/TMPEST"
+Issues = "https://github.com/Astrophysicscolin/TMPEST/issues"
 
 [project.optional-dependencies]
 dev = ["pytest"]
