@@ -62,11 +62,11 @@ folder only.
 
 ## 3. Get the code
 
-The repository is private, so git will
-ask you to sign in to GitHub.
+You will be sent one file, `tmpest-1.5.0.tar.gz`. Save it in your Downloads folder, then
+unpack it into your home folder (git is not needed for this route):
 
 ```bash
-git clone https://github.com/Astrophysicscolin/tmpest.git TMPEST
+cd ~ && tar -xzf ~/Downloads/tmpest-1.5.0.tar.gz && mv tmpest-1.5.0 TMPEST
 ```
 
 ```bash

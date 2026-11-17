@@ -56,11 +56,12 @@ Expected: git prints a version, Python is 3.10 or newer, `rustc` is 1.83 or newe
 
 ## 2. Get the code
 
-The repository is private, so a
-GitHub sign-in window will open.
+You will be sent one file, `tmpest-1.5.0.tar.gz`. Save it in your Downloads folder, then
+unpack it into your home folder (git is not needed for this route; `tar` is built into
+Windows 10 and 11):
 
 ```powershell
-git clone https://github.com/Astrophysicscolin/tmpest.git TMPEST
+cd $HOME; tar -xzf "$HOME\Downloads\tmpest-1.5.0.tar.gz"; Rename-Item tmpest-1.5.0 TMPEST
 ```
 
 ```powershell

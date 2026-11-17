@@ -41,6 +41,17 @@ python-source = "src"
 module-name = "tmpest._core"
 profile = "release"
 exclude = ["**/__pycache__/**", "**/*.pyc"]
+include = [
+    { path = "tests/*.py", format = "sdist" },
+    { path = "examples/demo.py", format = "sdist" },
+    { path = "examples/datasets.py", format = "sdist" },
+    { path = "examples/system_report.py", format = "sdist" },
+    { path = "examples/benchmark.py", format = "sdist" },
+    { path = "examples/gallery.py", format = "sdist" },
+    { path = "data/*.csv", format = "sdist" },
+    { path = "data/README.md", format = "sdist" },
+    { path = "data/PROVENANCE.yaml", format = "sdist" },
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
