@@ -14,7 +14,6 @@ BANDS = {"B": "johnson_B", "V": "johnson_V", "Rc": "cousins_R", "R": "cousins_R"
 SPEC_INSTRUMENT = "Snifs"
 GRID = np.arange(335.0, 965.0, 1.0)  # [nm]
 
-
 def main():
     print(f"[OK] downloading {URL}")
     with urllib.request.urlopen(URL, timeout=300) as fh:
@@ -63,7 +62,6 @@ def main():
         for k, lam in enumerate(GRID):
             writer.writerow([f"{lam:.1f}"] + [f"{fluxes[i][k]:.6e}" for i in order])
     print(f"[SAVE] {path}: {len(order)} epochs x {len(GRID)} wavelengths")
-
 
 if __name__ == "__main__":
     main()

@@ -2,13 +2,10 @@ import contextlib
 import dataclasses
 import io
 import sys
-
 import numpy as np
-
 from datasets import read_gaia_epoch_csv
 from demo import N_EPOCHS, synthetic_spectra
 from roundtrip_causes import fmt, time_factor
-
 import tmpest as tp
 
 cat = sys.modules["tmpest.catalog"]
@@ -17,10 +14,8 @@ N_SEEDS = 300
 N_SUB = 9
 N_CHUNKS = 8
 
-
 def restore():
     cat._fit_noise, cat._matched_cov, cat._fit_coherence = ORIG
-
 
 def expected_var(profile, phot):
     lam = phot.wavelength_array()
@@ -37,7 +32,6 @@ def expected_var(profile, phot):
         white = float(np.mean(np.outer(sc, sc) * kw)) + float(profile.sigma_white(lam, width)[b] ** 2)
         out[b] = red + white * time_factor(t, None)
     return out
-
 
 def chunk_population(profile, clean):
     lam = clean.wavelength
@@ -61,7 +55,6 @@ def chunk_population(profile, clean):
             cw[a, b] = np.mean(np.outer(sc[ia], sc[ib]) * k)
     return red, cw, inc
 
-
 def back_catalog(noisy, clean, law, fits=None, covs=None, coherence=None):
     if fits is not None:
         q = iter(fits)
@@ -76,7 +69,6 @@ def back_catalog(noisy, clean, law, fits=None, covs=None, coherence=None):
             return tp.catalog(noisy, signal=clean.flux, n_chunks=N_CHUNKS, min_points=8, law=law)
     finally:
         restore()
-
 
 def main(paths):
     for path in paths:
@@ -141,7 +133,6 @@ def main(paths):
             print(f"    expected sample-var factor of red at 40 epochs: {time_factor(np.sort(t_all)[:N_EPOCHS], p1.tau):.2f}")
             print(f"    back tau: true {p1.tau:.1f}, median {np.nanmedian(taus):.1f}, 10-90% {np.nanpercentile(taus, 10):.1f}-{np.nanpercentile(taus, 90):.1f}, no red in {np.mean(~np.isfinite(taus)):.2f}")
             print(f"    back ell median {np.median(ells):.3g}, phi median {np.median(phis):.2f} (10-90% {np.percentile(phis, 10):.2f}-{np.percentile(phis, 90):.2f})")
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])

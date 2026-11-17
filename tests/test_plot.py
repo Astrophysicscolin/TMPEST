@@ -1,14 +1,12 @@
 import numpy as np
 import pytest
-
 import tmpest as tp
 
 matplotlib = pytest.importorskip("matplotlib")
 matplotlib.use("Agg")
+
 import matplotlib.pyplot as plt
-
 import tmpest.plot as tpp
-
 
 @pytest.fixture
 def source():
@@ -21,7 +19,6 @@ def source():
     spec = tp.Spectra(np.linspace(400.0, 900.0, 50), np.ones((12, 50)), np.linspace(0.0, 300.0, 12))
     yield phot, spec, tp.catalog(phot), rng
     plt.close("all")
-
 
 def test_every_plot_draws_on_the_given_axes_and_returns_it(source):
     phot, spec, prof, rng = source
@@ -40,7 +37,6 @@ def test_every_plot_draws_on_the_given_axes_and_returns_it(source):
         assert call(ax) is ax
         assert ax.lines or ax.collections or ax.images
         plt.close(fig)
-
 
 def test_plots_make_their_own_axes_and_leave_style_alone(source):
     phot, _, prof, _ = source

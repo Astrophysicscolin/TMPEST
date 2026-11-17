@@ -1,11 +1,8 @@
 import contextlib
 import io
 import sys
-
 import numpy as np
-
 from datasets import read_gaia_epoch_csv
-
 import tmpest as tp
 
 cat = sys.modules["tmpest.catalog"]
@@ -14,13 +11,11 @@ ORIG_FIT_COH = cat._fit_coherence
 N_MC = 2000
 N_SUB = 9
 
-
 def time_factor(t, tau):
     t = t[np.isfinite(t)]
     if tau is None:
         return 1.0 - 1.0 / len(t)
     return 1.0 - float(np.mean(np.exp(-np.abs(t[:, None] - t[None, :]) / tau)))
-
 
 def predict(profile, phot, taus=None):
     lam = phot.wavelength_array()
@@ -41,7 +36,6 @@ def predict(profile, phot, taus=None):
         out.append((red, cw, inc, f_red, time_factor(t, None)))
     return np.array(out)
 
-
 def monte_carlo(profile, phot):
     flat = tp.Photometry({b: phot.time[b] for b in phot.names},
                          {b: np.ones(len(phot.time[b])) for b in phot.names})
@@ -51,21 +45,17 @@ def monte_carlo(profile, phot):
         var += [np.var(synth.flux[b]) for b in phot.names]
     return var / N_MC
 
-
 def quiet_catalog(phot, law):
     with contextlib.redirect_stdout(io.StringIO()):
         return tp.catalog(phot, law=law)
-
 
 def ratio(profile, phot, taus=None):
     p = predict(profile, phot, taus)
     total = profile.red_var + profile.white_var
     return np.sqrt((p[:, 0] * p[:, 3] + (p[:, 1] + p[:, 2]) * p[:, 4]) / total)
 
-
 def fmt(x):
     return "  ".join(f"{v:5.2f}" for v in x)
-
 
 def main(paths):
     for path in paths:
@@ -104,7 +94,6 @@ def main(paths):
             cat._fit_noise = ORIG_FIT_NOISE
             print(f"    counterfactual same red fraction in all bands (refit ell={same.ell:.3g} phi={same.coherent_fraction:.2f}): {fmt(ratio(same, phot))}")
             print(f"      same, population only:                     {fmt(np.sqrt(predict(same, phot)[:, :3].sum(axis=1) / tot))}")
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])

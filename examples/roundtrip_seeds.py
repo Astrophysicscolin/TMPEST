@@ -1,16 +1,12 @@
 import contextlib
 import io
 import sys
-
 import numpy as np
-
 from datasets import read_gaia_epoch_csv
 from demo import N_EPOCHS, synthetic_spectra
-
 import tmpest as tp
 
 N_SEEDS = 300
-
 
 def run(path, law, seed):
     rng = np.random.default_rng(seed)
@@ -30,11 +26,9 @@ def run(path, law, seed):
     one = np.array([np.std(direct.flux[b]) for b in phot.names]) / total
     return full, one, phot.names, back.tau, profile.tau
 
-
 def q(x):
     lo, med, hi = np.nanpercentile(x, [10, 50, 90])
     return f"{med:.2f} ({lo:.2f}-{hi:.2f})"
-
 
 def main(paths):
     for path in paths:
@@ -51,7 +45,6 @@ def main(paths):
             print(f"  law={law}  profile tau={tau:.2f}  back tau median={np.nanmedian(taus):.2f}  back tau nan frac={np.mean(~np.isfinite(taus)):.2f}")
             for i, b in enumerate(names):
                 print(f"    {b:8s} direct {q(one[:, i])}   via spectra {q(full[:, i])}   frac within 30%: direct {np.mean(np.abs(one[:, i]-1)<0.3):.2f} via {np.mean(np.abs(full[:, i]-1)<0.3):.2f}")
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])

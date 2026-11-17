@@ -1,11 +1,8 @@
 import contextlib
 import io
 import sys
-
 import numpy as np
-
 from roundtrip_via import N_EPOCHS, N_CHUNKS, back_catalog, tp, expected_var, fmt, read_gaia_epoch_csv, synthetic_spectra
-
 
 def main(paths):
     for path in paths:
@@ -35,7 +32,6 @@ def main(paths):
                 sel = fin & (rows[:, 1] / p1.tau >= lo) & (rows[:, 1] / p1.tau < hi)
                 if sel.any():
                     print(f"    back tau / true in [{lo}, {hi}): {sel.mean():.2f} of seeds, rms ratio {fmt(np.sqrt(rows[sel, 2:].mean(axis=0) / total))}")
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])

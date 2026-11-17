@@ -1,11 +1,9 @@
 import numpy as np
 import pytest
-
 import tmpest as tp
 from tmpest import _kernels
 
 needs_rust = pytest.mark.skipif(not tp.rust_available(), reason="compiled extension not built")
-
 
 @pytest.fixture
 def both():
@@ -21,7 +19,6 @@ def both():
     yield run
     tp.set_backend(start)
 
-
 def test_backend_is_reported_and_switchable():
     start = tp.backend()
     assert start in ("rust", "numpy")
@@ -33,7 +30,6 @@ def test_backend_is_reported_and_switchable():
         with pytest.raises(ImportError):
             tp.set_backend("rust")
     tp.set_backend(start)
-
 
 @needs_rust
 @pytest.mark.parametrize("shape", [(1, 1), (2, 3), (500, 7), (7, 500), (300, 300)])
@@ -49,14 +45,12 @@ def test_ou_filter_matches_numpy(both, shape, scale):
     ref, fast = both(lambda: tp.ou_filter(white[:, 0], x, scale))
     assert ref.shape == (shape[0],) and np.array_equal(ref, fast)
 
-
 @needs_rust
 def test_ou_filter_leaves_its_input_alone(both):
     white = np.random.default_rng(1).standard_normal((50, 4))
     keep = white.copy()
     both(lambda: tp.ou_filter(white, np.arange(50.0), 3.0))
     assert np.array_equal(white, keep)
-
 
 @needs_rust
 @pytest.mark.parametrize("n", [2, 11, 400, 5000])
@@ -71,7 +65,6 @@ def test_variogram_bins_match_numpy(both, n):
         assert np.allclose(a, b, rtol=1e-12, atol=0.0)
     assert np.array_equal(ref[2], fast[2])
 
-
 @needs_rust
 @pytest.mark.parametrize("n,k", [(4, 3), (50, 3), (50, 49), (2000, 101), (30000, 301)])
 def test_running_median_matches_numpy(both, n, k):
@@ -79,7 +72,6 @@ def test_running_median_matches_numpy(both, n, k):
     y[: n // 3] = np.round(y[: n // 3], 1)
     ref, fast = both(lambda: _kernels.running_median(y, k))
     assert np.array_equal(ref, fast)
-
 
 @needs_rust
 def test_whole_pipeline_gives_the_same_numbers_on_both_backends(both):

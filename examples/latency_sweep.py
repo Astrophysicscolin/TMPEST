@@ -2,10 +2,8 @@ import csv
 import os
 import sys
 import time
-
 import numpy as np
 from latency import COLORS, METHODS, N_PIXELS, LAMBDA, OUT, PAIRS
-
 import tmpest as tp
 
 SEED = 0
@@ -28,7 +26,6 @@ CASES = [(PIXEL_EPOCHS, p) for p in PIXEL_SIZES] if PIXELS else [(n, N_PIXELS) f
 AXIS = "pixels" if PIXELS else "epochs"
 SUFFIX = ("_red" if RED else "") + ("_pixels" if PIXELS else "")
 
-
 def residuals(n, rng):
     names = list(SIGMA)
     common = rng.standard_normal(n)
@@ -43,7 +40,6 @@ def residuals(n, rng):
     width = np.array([tp.BANDS[name][1] for name in names])
     return tp.Residuals(times, [r - r.mean() for r in resids], lam, width, names, "photometry")
 
-
 def clock(fn):
     start = time.perf_counter()
     fn()
@@ -55,7 +51,6 @@ def clock(fn):
         fn()
         times.append(time.perf_counter() - start)
     return float(np.median(times))
-
 
 def run():
     rows = []
@@ -81,7 +76,6 @@ def run():
             tp.set_backend("rust")
     return rows
 
-
 def save(rows):
     os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, f"latency_sweep{SUFFIX}.csv")
@@ -90,7 +84,6 @@ def save(rows):
         writer.writeheader()
         writer.writerows(rows)
     print(f"[SAVE] {path}")
-
 
 def figure(rows):
     import matplotlib
@@ -133,7 +126,6 @@ def figure(rows):
     path = os.path.join(OUT, f"latency_sweep{SUFFIX}.png")
     fig.savefig(path, dpi=160)
     print(f"[SAVE] {path}")
-
 
 if __name__ == "__main__":
     results = run()

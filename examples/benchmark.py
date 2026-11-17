@@ -1,14 +1,11 @@
 import sys
 import time
-
 import numpy as np
-
 import tmpest as tp
 from tmpest import _kernels
 
 SEED = 0
 SCALE = float(sys.argv[1]) if len(sys.argv) > 1 else 1.0
-
 
 def best(fn, repeats=3):
     times = []
@@ -17,7 +14,6 @@ def best(fn, repeats=3):
         fn()
         times.append(time.perf_counter() - start)
     return min(times)
-
 
 def jobs():
     rng = np.random.default_rng(SEED)
@@ -50,7 +46,6 @@ def jobs():
         (f"apply: photometry 1 band, {n_long} points", lambda: tp.apply(profile, long_series, np.random.default_rng(1))),
     ]
 
-
 def main():
     start = tp.backend()
     names = ["numpy", "rust"] if tp.rust_available() else ["numpy"]
@@ -68,7 +63,6 @@ def main():
         fast = row.get("rust")
         ratio = f"{row['numpy'] / fast:>8.1f}x" if fast else f"{'-':>9}"
         print(f"{label:<58} {row['numpy']:>10.3f} {fast if fast is not None else float('nan'):>10.3f} {ratio}")
-
 
 if __name__ == "__main__":
     main()

@@ -1,10 +1,8 @@
 import os
 import sys
-
 import matplotlib
 import numpy as np
 from datasets import load
-
 import tmpest as tp
 import tmpest.plot as tpp
 
@@ -14,14 +12,12 @@ import matplotlib.pyplot as plt
 SEED = 42
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "figures")
 
-
 def save(fig, name):
     fig.tight_layout()
     path = os.path.join(OUT, name)
     fig.savefig(path, dpi=150)
     plt.close(fig)
     print(f"[SAVE] {path}")
-
 
 def main():
     os.makedirs(OUT, exist_ok=True)
@@ -61,7 +57,6 @@ def main():
     tpp.plot_spectra(sn_spec, ax=axes[1], max_lines=6)
     tpp.plot_spectra(sn_spec, ax=axes[2], kind="image", normalize=True)
     save(fig, "sn2011fe_data.png")
-
 
 if __name__ == "__main__":
     sys.exit(main())

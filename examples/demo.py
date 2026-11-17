@@ -10,7 +10,6 @@ N_EPOCHS = 40
 N_PIXELS = 600
 LINES = [(486.1, 0.6), (656.3, 0.8), (854.2, 0.5)]  # [nm]
 
-
 def simulated_photometry(rng):
     t = np.sort(rng.uniform(0.0, 900.0, 400))  # [d]
     activity = 4e-3 * tp.ou_filter(rng.standard_normal(400), t, 12.0)
@@ -21,14 +20,12 @@ def simulated_photometry(rng):
         flux[band] = 1e4 * (1.0 + chroma * activity + 1.5e-3 * rng.standard_normal(400))
     return tp.Photometry(time, flux)
 
-
 def synthetic_spectra(time):
     lam = np.linspace(380.0, 1000.0, N_PIXELS)  # [nm]
     continuum = (lam / 600.0) ** -1.5
     for centre, depth in LINES:
         continuum = continuum * (1.0 - depth * np.exp(-0.5 * ((lam - centre) / 1.5) ** 2))
     return tp.Spectra(lam, np.tile(continuum, (len(time), 1)), time)
-
 
 def main():
     rng = np.random.default_rng(SEED)
@@ -70,7 +67,6 @@ def main():
         fig.tight_layout()
         fig.savefig(sys.argv[2], dpi=150)
         print(f"[SAVE] {sys.argv[2]}")
-
 
 if __name__ == "__main__":
     main()

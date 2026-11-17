@@ -1,20 +1,16 @@
 import csv
 import gzip
 import os
-
 import numpy as np
-
 import tmpest as tp
 
 DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data")
 AAVSO_BANDS = {"B": "johnson_B", "V": "johnson_V", "R": "cousins_R"}
 FITS_TYPES = {"E": ">f4", "D": ">f8", "I": ">i2", "J": ">i4", "K": ">i8", "B": "u1"}
 
-
 def _rows(path):
     with open(path) as fh:
         return list(csv.DictReader(fh))
-
 
 def read_gaia_epoch_csv(path):
     cols = {"gaia_G": ("g_transit_time", "g_transit_flux", "variability_flag_g_reject"),
@@ -28,12 +24,10 @@ def read_gaia_epoch_csv(path):
         flux[band] = np.array([float(r[fc]) for r in keep])
     return tp.Photometry(time, flux)
 
-
 def read_single_band_csv(path, band, time_col="time", flux_col="flux"):
     rows = [r for r in _rows(path) if r[time_col] and r[flux_col]]
     return tp.Photometry({band: np.array([float(r[time_col]) for r in rows])},
                          {band: np.array([float(r[flux_col]) for r in rows])})
-
 
 def read_ztf_csv(path):
     rows = [r for r in _rows(path) if r["catflags"] == "0"]
@@ -45,7 +39,6 @@ def read_ztf_csv(path):
             flux[band] = tp.mag_to_flux([float(r["mag"]) for r in sel])
     return tp.Photometry(time, flux)
 
-
 def read_long_photometry_csv(path, reference=None):
     rows = [r for r in _rows(path) if reference is None or r["reference"] == reference]
     time, flux = {}, {}
@@ -54,7 +47,6 @@ def read_long_photometry_csv(path, reference=None):
         time[band] = np.array([float(r["time_mjd"]) for r in sel])
         flux[band] = tp.mag_to_flux([float(r["mag"]) for r in sel])
     return tp.Photometry(time, flux)
-
 
 def read_wide_spectra_csv(path):
     with open(path) as fh:
@@ -78,14 +70,12 @@ def read_aavso_flux_csv(paths):
     names = sorted(time, key=lambda b: tp.BANDS[b][0])
     return tp.Photometry({b: time[b] for b in names}, {b: flux[b] for b in names})
 
-
 def read_hoffman(star):
     folder = os.path.join(DATA, "hoffman")
     paths = sorted(os.path.join(folder, f) for f in os.listdir(folder) if f.startswith(star) and f.endswith(".csv"))
     if not paths:
         raise FileNotFoundError(f"no files for {star} in {folder}; run examples/fetch_hoffman.py first")
     return read_aavso_flux_csv(paths)
-
 
 def read_fits_tables(path):
     opener = gzip.open if path.endswith(".gz") else open
@@ -123,7 +113,6 @@ def read_fits_tables(path):
         pos += (size + int(header.get("PCOUNT", 0)) + 2879) // 2880 * 2880
     return tables
 
-
 def read_lamost_mrs(folder, min_snr=10.0, step=0.01, fiber=None, normalise=True):
     arms = {"B": {}, "R": {}}
     for name in sorted(os.listdir(folder)):
@@ -148,7 +137,6 @@ def read_lamost_mrs(folder, min_snr=10.0, step=0.01, fiber=None, normalise=True)
         grids.append(grid)
         cubes.append(np.stack([np.interp(grid, *arms[arm][e]) for e in epochs]))
     return tp.Spectra(np.concatenate(grids), np.concatenate(cubes, axis=1), np.array(epochs) / 1440.0)
-
 
 def load(name):
     path = os.path.join(DATA, name)

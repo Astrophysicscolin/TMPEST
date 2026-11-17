@@ -2,7 +2,6 @@ import csv
 import os
 import sys
 import warnings
-
 import numpy as np
 from datasets import DATA, read_lamost_mrs
 from latency import COLORS, MARKERS, METHODS, N_DRAWS, OUT, PAIRS, clock, fourier, lag_one
@@ -17,7 +16,6 @@ MAX_HARMONICS = 5
 BANDS = {"b1": (502.0, 10.0), "b2": (517.0, 20.0), "b3": (530.0, 6.0),
          "r1": (638.0, 12.0), "r2": (656.0, 24.0), "r3": (673.0, 10.0)}  # [nm]
 PAIRS_OF_BANDS = (("b1", "b2"), ("b2", "r2"))
-
 
 def comparison(spectra, folder):
     blue = spectra.wavelength < 580.0
@@ -42,11 +40,9 @@ def comparison(spectra, folder):
         inst = np.nanmedian(np.array(stack), axis=0)
     return np.where(np.isfinite(inst), inst, 1.0), len(stack)
 
-
 def chunk_means(spectra, x):
     idx = _chunk_index(spectra.wavelength, N_CHUNKS)
     return np.stack([x[:, idx == c].mean(axis=1) for c in np.unique(idx)], axis=1)
-
 
 def choose_harmonics(spectra, flux):
     night = np.floor(spectra.time)
@@ -61,7 +57,6 @@ def choose_harmonics(spectra, flux):
         scores.append(float(np.sqrt(np.mean(err))))
     return int(np.argmin(scores)), scores
 
-
 def baseline(spectra, folder):
     inst, n_comp = comparison(spectra, folder)
     flux = spectra.flux / inst
@@ -73,7 +68,6 @@ def baseline(spectra, folder):
           + ", ".join(f"{s:.4f}" for s in scores) + ")")
     return np.median(spectra.flux, axis=0)[None, :] * inst * orbit
 
-
 def real_bands(spectra, signal):
     ratio = spectra.flux / signal
     cols = []
@@ -82,7 +76,6 @@ def real_bands(spectra, signal):
         cols.append(ratio[:, sel].mean(axis=1) - 1.0)
     band = np.stack(cols, axis=1)
     return band - band.mean(axis=0)
-
 
 def targets(spectra):
     names = list(BANDS)
@@ -98,14 +91,12 @@ def draw(name, model, res, phot, grid, rng):
         return np.stack([noise[n] for n in phot.names], axis=1)
     return PAIRS[name][1](model, res, grid, rng)
 
-
 def summary(band):
     names = list(BANDS)
     scatter = np.std(band, axis=0)
     auto = float(np.mean([lag_one(band[:, b] - band[:, b].mean()) for b in range(band.shape[1])]))
     cross = [float(np.corrcoef(band[:, names.index(a)], band[:, names.index(b)])[0, 1]) for a, b in PAIRS_OF_BANDS]
     return scatter, auto, cross
-
 
 def run():
     spectra = read_lamost_mrs(os.path.join(DATA, "lamost"), normalise=False)
@@ -145,7 +136,6 @@ def run():
         tp.set_backend("rust")
     return rows
 
-
 def report(rows):
     print(f"{'method':<17}{'backend':<8}{'measure [ms]':>13}{'apply [ms]':>12}{'scatter':>9}{'min':>7}{'max':>7}"
           f"{'lag-1':>8}{'in arm':>8}{'B-R':>7}")
@@ -161,10 +151,8 @@ def report(rows):
         writer.writerows(rows)
     print(f"[SAVE] {path}")
 
-
 def pick(rows, method):
     return next(r for r in rows if r["method"] == method and r["backend"] in ("rust", "numpy", ""))
-
 
 def figure(rows):
     import matplotlib
@@ -212,7 +200,6 @@ def figure(rows):
     path = os.path.join(OUT, "latency_lamost.png")
     fig.savefig(path, dpi=160)
     print(f"[SAVE] {path}")
-
 
 if __name__ == "__main__":
     results = run()

@@ -8,7 +8,6 @@ FILES = ["LX-Leo-B-filter-Measurement.csv", "LX-Leo-V-filter-Measurement.csv", "
          "V0354-UMa-R-filter-Measurements.csv"]
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "hoffman")
 
-
 def main():
     os.makedirs(OUT, exist_ok=True)
     for name in FILES:
@@ -18,7 +17,6 @@ def main():
         with open(path, "wb") as fh:
             fh.write(raw)
         print(f"[SAVE] {path} ({len(raw)} bytes)")
-
 
 if __name__ == "__main__":
     main()
