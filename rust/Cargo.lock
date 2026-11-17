@@ -267,7 +267,7 @@ checksum = "8c447be3a2abfa84b2d91680c56600bd6b2873866de27b36ec911be705e291da"
 
 [[package]]
 name = "tmpest-core"
-version = "1.4.0"
+version = "1.5.0"
 dependencies = [
  "ndarray",
  "numpy",

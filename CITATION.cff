@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use TMPEST, please cite it as below, and cite the surveys whose data you use."
 type: software
 title: "TMPEST: Transfer of Multimodal Perturbations upon Emulated Spectra and Time series"
-version: 1.4.0
+version: 1.5.0
 license: BSD-3-Clause
 authors:
   - family-names: Harrison

@@ -97,7 +97,7 @@ python -m pip install -e ".[dev,examples]"
 ```
 
 The second line compiles the Rust core; the first time takes a few minutes. Expected last
-line: `Successfully installed tmpest-1.4.0` (other packages may be listed too). An error
+line: `Successfully installed tmpest-1.5.0` (other packages may be listed too). An error
 mentioning `link.exe` means the C++ build tools from step 1 are missing or PowerShell was not
 reopened.
 

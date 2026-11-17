@@ -590,7 +590,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 BSD 3-Clause "New" or "Revised" License
 
 Used by:
-  tmpest-core 1.4.0
+  tmpest-core 1.5.0
 
 Copyright (c) <year> <owner>. 
 

@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "tmpest"
-version = "1.4.0"
+version = "1.5.0"
 description = "Measure chromatic jitter in one modality (photometry or spectroscopy) and apply it to synthetic data in the other"
 readme = "README.md"
 license = "BSD-3-Clause"

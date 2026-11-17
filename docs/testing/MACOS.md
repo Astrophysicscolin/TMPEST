@@ -100,7 +100,7 @@ python -m pip install -e ".[dev,examples]"
 ```
 
 The second line compiles the Rust core; the first time takes one to three minutes. Expected
-last line: `Successfully installed tmpest-1.4.0` (other packages may be listed too).
+last line: `Successfully installed tmpest-1.5.0` (other packages may be listed too).
 
 ## 6. Check that the compiled core is in use
 
