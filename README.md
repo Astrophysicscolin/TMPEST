@@ -52,19 +52,8 @@ same. `RAYON_NUM_THREADS=4` limits the Rust core to 4 threads (default: all core
 the compiled core (for example running straight from `src/` with `PYTHONPATH`), everything
 still works on the numpy backend, more slowly on long series.
 
-What the Rust core covers, measured on a 2-core Linux machine (`examples/benchmark.py`):
-
-| Job | numpy | Rust | Speed-up |
-|---|---|---|---|
-| Correlated-noise filter, 1,000,000 epochs x 9 | 1.74 s | 0.03 s | 60x |
-| Running-median detrend, 1,000,000 points, window 501 | 6.37 s | 0.06 s | 104x |
-| Variogram, 1,000,000 points | 0.95 s | 0.13 s | 7x |
-| `catalog`, 1,000,000 points with `window=` | 9.2 s | 0.14 s | 66x |
-| `apply` to photometry, 1,000,000 points | 2.3 s | 0.35 s | 7x |
-| `apply` to spectra, 2,000 x 8,000 | 1.2 s | 0.9 s | 1.3x |
-
-The same jobs on a 14-core Apple Silicon Mac (macOS 15, Python 3.12, 14 threads, one run on
-2026-11-15):
+What the Rust core covers, measured with `examples/benchmark.py` on a 14-core Apple Silicon
+Mac (macOS 15, Python 3.12, 14 threads, one run on 2026-11-15):
 
 | Job | numpy | Rust | Speed-up |
 |---|---|---|---|
@@ -75,7 +64,7 @@ The same jobs on a 14-core Apple Silicon Mac (macOS 15, Python 3.12, 14 threads,
 | `apply` to photometry, 1,000,000 points | 1.4 s | 0.15 s | 10x |
 | `apply` to spectra, 2,000 x 8,000 | 0.49 s | 0.34 s | 1.4x |
 
-In both tables the last row barely moves because drawing the random numbers (numpy, one thread) is now the
+The last row barely moves because drawing the random numbers (numpy, one thread) is now the
 slow part. Ten million points catalogued and applied in under a minute with 1.4 GB of memory.
 Everything is still held in memory at once: a spectral cube needs about 3 x 8 bytes per
 element, so that, not speed, is the ceiling for very large jobs.

@@ -7,6 +7,7 @@ import numpy as np
 from datasets import read_hoffman
 
 import tmpest as tp
+from tmpest.catalog import _nearest
 
 SEED = 0
 STARS = {"LX": ("LX Leo", 0.235247), "MU": ("MU Leo", 0.388442), "V0354": ("V354 UMa", 0.293825)}  # [d]
@@ -23,12 +24,16 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "figures")
 
 
 # INPUT
-def fourier_signal(t, flux, period):
+def fourier(t, period, harmonics):
     phase = 2.0 * np.pi * t / period
     cols = [np.ones_like(t)]
-    for k in range(1, N_FOURIER + 1):
+    for k in range(1, harmonics + 1):
         cols += [np.cos(k * phase), np.sin(k * phase)]
-    design = np.stack(cols, axis=1)
+    return np.stack(cols, axis=1)
+
+
+def fourier_signal(t, flux, period):
+    design = fourier(t, period, N_FOURIER)
     return design @ np.linalg.lstsq(design, flux, rcond=None)[0]
 
 
@@ -149,8 +154,7 @@ def lag_one(x):
 
 
 def matched_corr(ta, ra, tb, rb):
-    j = np.clip(np.searchsorted(tb, ta), 1, len(tb) - 1)
-    j = np.where(np.abs(tb[j - 1] - ta) <= np.abs(tb[j] - ta), j - 1, j)
+    j = _nearest(ta, tb)
     return float(np.mean(ra * rb[j]) / np.sqrt(np.mean(ra * ra) * np.mean(rb[j] * rb[j])))
 
 

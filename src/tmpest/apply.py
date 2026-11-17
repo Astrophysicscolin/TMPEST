@@ -25,15 +25,14 @@ def _is_sorted(x):
 
 def _coherent_field(profile, time, log_lam, rng, tau):
     z = rng.standard_normal((len(time), len(log_lam)))
-    if _is_sorted(time) and _is_sorted(log_lam):
-        if tau is not None:
-            _kernels.ou_filter_inplace(z, time, tau, axis=0)
-        return _kernels.ou_filter_inplace(z, log_lam, profile.ell, axis=1)
-    it = np.argsort(time, kind="stable")
-    il = np.argsort(log_lam, kind="stable")
+    ordered = _is_sorted(time) and _is_sorted(log_lam)
+    it = slice(None) if ordered else np.argsort(time, kind="stable")
+    il = slice(None) if ordered else np.argsort(log_lam, kind="stable")
     if tau is not None:
         _kernels.ou_filter_inplace(z, time[it], tau, axis=0)
     _kernels.ou_filter_inplace(z, log_lam[il], profile.ell, axis=1)
+    if ordered:
+        return z
     out = np.empty_like(z)
     out[np.ix_(it, il)] = z
     return out
@@ -41,12 +40,13 @@ def _coherent_field(profile, time, log_lam, rng, tau):
 
 def _coherent_noise(profile, time, lam, rng, red, white):
     noise = None
+    log_lam = np.log(lam)
     if red > 0 and profile.has_red:
-        noise = _coherent_field(profile, time, np.log(lam), rng, profile.tau)
+        noise = _coherent_field(profile, time, log_lam, rng, profile.tau)
         noise *= red
         noise *= profile.sigma_red(lam)[None, :]
     if white > 0 and profile.coherent_fraction > 0:
-        field = _coherent_field(profile, time, np.log(lam), rng, None)
+        field = _coherent_field(profile, time, log_lam, rng, None)
         field *= white
         field *= profile.sigma_coherent_white(lam)[None, :]
         noise = field if noise is None else np.add(noise, field, out=noise)
@@ -95,8 +95,13 @@ def draw(profile, target, rng, red=1.0, white=1.0, n_sub=9):
 def apply(profile, target, rng, red=1.0, white=1.0, n_sub=9):
     noise = draw(profile, target, rng, red=red, white=white, n_sub=n_sub)
     if isinstance(target, Spectra):
-        return Spectra(target.wavelength.copy(), target.flux * (1.0 + noise), target.time.copy())
-    flux = {n: target.flux[n] * (1.0 + noise[n]) for n in target.names}
+        noise += 1.0
+        noise *= target.flux
+        return Spectra(target.wavelength.copy(), noise, target.time.copy())
+    for n in target.names:
+        noise[n] += 1.0
+        noise[n] *= target.flux[n]
+    flux = noise
     time = {n: target.time[n].copy() for n in target.names}
     width = None if target.width is None else dict(target.width)
     return Photometry(time, flux, dict(target.wavelength), width)

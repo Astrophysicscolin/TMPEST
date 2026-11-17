@@ -5,9 +5,10 @@ import warnings
 
 import numpy as np
 from datasets import DATA, read_lamost_mrs
-from latency import COLORS, MARKERS, METHODS, N_DRAWS, OUT, PAIRS, clock, lag_one
+from latency import COLORS, MARKERS, METHODS, N_DRAWS, OUT, PAIRS, clock, fourier, lag_one
 
 import tmpest as tp
+from tmpest.catalog import _chunk_index
 
 SEED = 0
 N_CHUNKS = 16
@@ -42,18 +43,8 @@ def comparison(spectra, folder):
     return np.where(np.isfinite(inst), inst, 1.0), len(stack)
 
 
-def fourier(t, harmonics):
-    phase = 2.0 * np.pi * t / PERIOD
-    cols = [np.ones_like(t)]
-    for k in range(1, harmonics + 1):
-        cols += [np.cos(k * phase), np.sin(k * phase)]
-    return np.stack(cols, axis=1)
-
-
 def chunk_means(spectra, x):
-    lam = spectra.wavelength
-    edges = np.geomspace(lam[0], lam[-1], N_CHUNKS + 1)
-    idx = np.clip(np.searchsorted(edges, lam, side="right") - 1, 0, N_CHUNKS - 1)
+    idx = _chunk_index(spectra.wavelength, N_CHUNKS)
     return np.stack([x[:, idx == c].mean(axis=1) for c in np.unique(idx)], axis=1)
 
 
@@ -64,8 +55,8 @@ def choose_harmonics(spectra, flux):
         err = []
         for n in np.unique(night):
             fit = night != n
-            coef = np.linalg.lstsq(fourier(spectra.time[fit], h), flux[fit], rcond=None)[0]
-            pred = fourier(spectra.time[~fit], h) @ coef
+            coef = np.linalg.lstsq(fourier(spectra.time[fit], PERIOD, h), flux[fit], rcond=None)[0]
+            pred = fourier(spectra.time[~fit], PERIOD, h) @ coef
             err.append(np.mean((chunk_means(spectra, flux[~fit]) - chunk_means(spectra, pred)) ** 2))
         scores.append(float(np.sqrt(np.mean(err))))
     return int(np.argmin(scores)), scores
@@ -76,7 +67,7 @@ def baseline(spectra, folder):
     flux = spectra.flux / inst
     flux = flux / np.median(flux, axis=0)
     harmonics, scores = choose_harmonics(spectra, flux)
-    design = fourier(spectra.time, harmonics)
+    design = fourier(spectra.time, PERIOD, harmonics)
     orbit = design @ np.linalg.lstsq(design, flux, rcond=None)[0]
     print(f"[OK] {n_comp} comparison stars; orbital harmonics {harmonics} (held-out rms by harmonics: "
           + ", ".join(f"{s:.4f}" for s in scores) + ")")

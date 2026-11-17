@@ -7,6 +7,7 @@ import numpy as np
 
 from datasets import read_gaia_epoch_csv
 from demo import N_EPOCHS, synthetic_spectra
+from roundtrip_causes import fmt, time_factor
 
 import tmpest as tp
 
@@ -19,13 +20,6 @@ N_CHUNKS = 8
 
 def restore():
     cat._fit_noise, cat._matched_cov, cat._fit_coherence = ORIG
-
-
-def time_factor(t, tau):
-    t = t[np.isfinite(t)]
-    if tau is None:
-        return 1.0 - 1.0 / len(t)
-    return 1.0 - float(np.mean(np.exp(-np.abs(t[:, None] - t[None, :]) / tau)))
 
 
 def expected_var(profile, phot):
@@ -82,10 +76,6 @@ def back_catalog(noisy, clean, law, fits=None, covs=None, coherence=None):
             return tp.catalog(noisy, signal=clean.flux, n_chunks=N_CHUNKS, min_points=8, law=law)
     finally:
         restore()
-
-
-def fmt(x):
-    return "  ".join(f"{v:5.2f}" for v in x)
 
 
 def main(paths):

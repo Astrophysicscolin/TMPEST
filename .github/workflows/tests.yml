@@ -30,5 +30,3 @@ jobs:
         run: python -m pytest -q
         env:
           TMPEST_BACKEND: numpy
-      - name: Demo
-        run: python examples/demo.py

@@ -10,6 +10,7 @@ except ImportError:
 
 BACKENDS = ("rust", "numpy")
 STATE = {"rust": _core is not None}
+MEDIAN_BLOCK = 65536
 
 
 def backend():
@@ -78,5 +79,8 @@ def variogram_bins(t, r, lags, edges):
 def running_median(y, k):
     if STATE["rust"]:
         return _core.running_median(y, k)
-    padded = np.pad(y, k // 2, mode="reflect")
-    return np.median(sliding_window_view(padded, k), axis=-1)
+    windows = sliding_window_view(np.pad(y, k // 2, mode="reflect"), k)
+    out = np.empty(len(windows))
+    for start in range(0, len(windows), MEDIAN_BLOCK):
+        out[start:start + MEDIAN_BLOCK] = np.median(windows[start:start + MEDIAN_BLOCK], axis=-1)
+    return out

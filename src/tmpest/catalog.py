@@ -13,14 +13,18 @@ SHORT_LAG_QUANTILE = 0.06
 
 # SCRAPE
 def _running_median(t, y, window):
-    steps = np.diff(t)
-    steps = steps[steps > 0]
-    if len(steps) == 0:
+    cadence = _cadence(t)
+    if cadence == 0:
         return np.full(len(y), np.median(y))
-    k = max(int(round(window / np.median(steps))) | 1, 3)
+    k = max(int(round(window / cadence)) | 1, 3)
     if k >= len(y):
         return np.full(len(y), np.median(y))
     return _kernels.running_median(np.ascontiguousarray(y, dtype=float), k)
+
+
+def _chunk_index(lam, n):
+    edges = np.geomspace(lam[0], lam[-1], n + 1)
+    return np.clip(np.searchsorted(edges, lam, side="right") - 1, 0, n - 1)
 
 
 def _channel_residual(t, y, window, clip, label):
@@ -66,8 +70,7 @@ def scrape(data, signal=None, window=None, clip=5.0, n_chunks=16):
         ratio[~np.isfinite(ratio)] = np.nan
         lam = data.wavelength
         n = int(min(n_chunks, len(lam)))
-        edges = np.geomspace(lam[0], lam[-1], n + 1)
-        idx = np.clip(np.searchsorted(edges, lam, side="right") - 1, 0, n - 1)
+        idx = _chunk_index(lam, n)
         pix = data.pixel_width()
         times, resids, wavelength, width, names = [], [], [], [], []
         for c in range(n):
@@ -123,9 +126,7 @@ def _fit_noise(t, r, significance=2.5):
     if len(lag) == 0 or np.any(gamma <= 0):
         return var, 0.0, np.nan
     weight = count / gamma ** 2
-    steps = np.diff(t)
-    steps = steps[steps > 0]
-    cadence = float(np.median(steps))
+    cadence = _cadence(t)
     baseline = float(t[-1] - t[0])
     best = None
     if len(lag) >= 4 and baseline > cadence:
@@ -161,9 +162,13 @@ def _kernel(ua, ub, ell):
     return float(np.mean(np.exp(-np.abs(ua[:, None] - ub[None, :]) / ell)))
 
 
-def _matched_cov(ta, ra, tb, rb, tol):
+def _nearest(ta, tb):
     j = np.clip(np.searchsorted(tb, ta), 1, len(tb) - 1)
-    j = np.where(np.abs(tb[j - 1] - ta) <= np.abs(tb[j] - ta), j - 1, j)
+    return np.where(np.abs(tb[j - 1] - ta) <= np.abs(tb[j] - ta), j - 1, j)
+
+
+def _matched_cov(ta, ra, tb, rb, tol):
+    j = _nearest(ta, tb)
     ok = np.abs(tb[j] - ta) <= tol
     n = int(ok.sum())
     if n < 8:
@@ -179,19 +184,20 @@ def _cadence(t):
 
 def _fit_coherence(u, cov, weight, red_var, white_var):
     total = red_var + white_var
-    pairs = [(a, b) for a in range(len(u)) for b in range(a + 1, len(u))
-             if weight[a, b] > 0 and total[a] > 0 and total[b] > 0]
-    if not pairs:
+    ia, ib = np.triu_indices(len(u), 1)
+    use = (weight[ia, ib] > 0) & (total[ia] > 0) & (total[ib] > 0)
+    if not use.any():
         return np.inf, 0.0, False
-    ia = np.array([p[0] for p in pairs])
-    ib = np.array([p[1] for p in pairs])
+    ia, ib = ia[use], ib[use]
+    self_dist = [np.abs(u[c][:, None] - u[c][None, :]) for c in range(len(u))]
+    pair_dist = [np.abs(u[a][:, None] - u[b][None, :]) for a, b in zip(ia, ib)]
     norm = np.sqrt(total[ia] * total[ib])
     target = cov[ia, ib] / norm
     wt = weight[ia, ib]
     best = (np.inf, np.inf, 0.0)
     for ell in ELL_GRID:
-        diag = np.array([_kernel(u[c], u[c], ell) for c in range(len(u))])
-        kappa = np.array([_kernel(u[a], u[b], ell) for a, b in pairs]) / np.sqrt(diag[ia] * diag[ib])
+        diag = np.array([float(np.mean(np.exp(-d / ell))) for d in self_dist])
+        kappa = np.array([float(np.mean(np.exp(-d / ell))) for d in pair_dist]) / np.sqrt(diag[ia] * diag[ib])
         for phi in PHI_GRID:
             h = red_var + phi * white_var
             sse = float(np.sum(wt * (target - np.sqrt(h[ia] * h[ib]) / norm * kappa) ** 2))
@@ -217,9 +223,11 @@ def catalog(data, alpha=None, law="powerlaw", min_points=10, match_tol=None, sig
     if law not in ("powerlaw", "interp"):
         raise ValueError("law must be 'powerlaw' or 'interp'")
     res = scrape(data, **scrape_kw)
-    keep = [i for i in range(len(res.resid)) if len(res.resid[i]) >= min_points]
+    keep = []
     for i in range(len(res.resid)):
-        if i not in keep:
+        if len(res.resid[i]) >= min_points:
+            keep.append(i)
+        else:
             print(f"[WARN] tmpest: channel {res.names[i]} has {len(res.resid[i])} usable points "
                   f"(< {min_points}); skipped")
     if not keep:
@@ -244,9 +252,10 @@ def catalog(data, alpha=None, law="powerlaw", min_points=10, match_tol=None, sig
     total_var = red_var + white_var
     cov = np.full((n_ch, n_ch), np.nan)
     weight = np.zeros((n_ch, n_ch))
+    cadence = [_cadence(t) for t in times]
     for a in range(n_ch):
         for b in range(a + 1, n_ch):
-            tol = match_tol if match_tol is not None else 0.25 * min(_cadence(times[a]), _cadence(times[b]))
+            tol = match_tol if match_tol is not None else 0.25 * min(cadence[a], cadence[b])
             c, n = _matched_cov(times[a], resids[a], times[b], resids[b], tol)
             if n:
                 cov[a, b] = cov[b, a] = c

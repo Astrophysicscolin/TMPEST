@@ -47,24 +47,20 @@ class ChromaticProfile:
         y = 0.5 * np.log(var[ok][order])
         return np.exp(np.interp(np.log(lam), x, y))
 
-    def sigma_red(self, wavelength):
+    def _law(self, wavelength, var, amp, alpha):
         lam = np.asarray(wavelength, dtype=float)
         if self.law == "interp":
-            return self._interp(lam, self.red_point_var)
-        return self.red_amp * (lam / self.lambda_ref) ** self.red_alpha
+            return self._interp(lam, var)
+        return amp * (lam / self.lambda_ref) ** alpha
+
+    def sigma_red(self, wavelength):
+        return self._law(wavelength, self.red_point_var, self.red_amp, self.red_alpha)
 
     def sigma_coherent_white(self, wavelength):
-        lam = np.asarray(wavelength, dtype=float)
-        if self.law == "interp":
-            return self._interp(lam, self.cw_point_var)
-        return self.cw_amp * (lam / self.lambda_ref) ** self.cw_alpha
+        return self._law(wavelength, self.cw_point_var, self.cw_amp, self.cw_alpha)
 
     def sigma_white(self, wavelength, width=None):
-        lam = np.asarray(wavelength, dtype=float)
-        if self.law == "interp":
-            density = self._interp(lam, self.white_density)
-        else:
-            density = self.white_amp * (lam / self.lambda_ref) ** self.white_alpha
+        density = self._law(wavelength, self.white_density, self.white_amp, self.white_alpha)
         if self.width is None:
             return density
         if width is None:
