@@ -28,3 +28,4 @@ paper/*.out
 paper/*.spl
 paper/*.pdf
 data/lamost/
+upload/
