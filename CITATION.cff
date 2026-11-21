@@ -3,6 +3,14 @@ message: "If you use TMPEST, please cite it as below, and cite the surveys whose
 type: software
 title: "TMPEST: Transfer of Multimodal Perturbations upon Emulated Spectra and Time series"
 version: 1.5.0
+doi: 10.5281/zenodo.24430192
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24430192
+    description: "Concept DOI: all versions, resolves to the latest"
+  - type: doi
+    value: 10.5281/zenodo.24430193
+    description: "Version 1.5.0"
 license: BSD-3-Clause
 repository-code: "https://github.com/Astrophysicscolin/TMPEST"
 date-released: 2026-11-21

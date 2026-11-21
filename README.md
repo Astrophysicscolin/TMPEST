@@ -1,5 +1,7 @@
 # TMPEST
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24430192.svg)](https://doi.org/10.5281/zenodo.24430192)
+
 TMPEST: Transfer of Multimodal Perturbations upon Emulated Spectra and Time series.
 
 Measure the chromatic jitter (wavelength-dependent noise) in one kind of data and put it on
@@ -268,7 +270,9 @@ profile then carries white noise per channel with no width scaling.
 ## Citing
 
 The author is Colin Harrison (Florida Institute of Technology). `CITATION.cff` holds the
-citation for the software; there is no paper or DOI yet. If you use the files in `data/`, or
+citation for the software. Each release is archived on Zenodo: cite
+doi:10.5281/zenodo.24430192 for TMPEST in general (it always resolves to the latest version),
+or doi:10.5281/zenodo.24430193 for version 1.5.0 exactly. There is no paper yet. If you use the files in `data/`, or
 your own data from these surveys, cite the surveys, not this repository:
 
 | Data | Cite |
