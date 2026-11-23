@@ -1,5 +1,6 @@
 # TMPEST
 
+[![PyPI](https://img.shields.io/pypi/v/tmpest.svg)](https://pypi.org/project/tmpest/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24430192.svg)](https://doi.org/10.5281/zenodo.24430192)
 
 TMPEST: Transfer of Multimodal Perturbations upon Emulated Spectra and Time series.
@@ -14,6 +15,15 @@ The only Python dependency is numpy; matplotlib is optional, for
 `tmpest.plot`.
 
 ## Install
+
+```bash
+python -m pip install tmpest
+python -c "import tmpest as tp; print(tp.__version__, tp.backend())"   # 1.5.0 rust
+```
+
+PyPI has prebuilt wheels for Linux (x86-64, aarch64), macOS (Apple Silicon, Intel) and Windows
+(x64), Python 3.10 and newer, so no compiler is needed on those. Add `[plot]` for matplotlib.
+Elsewhere pip builds from source, which needs the Rust compiler (see below).
 
 TMPEST is a Python library with a small compiled core written in Rust (the slow inner loops
 only). Installing from source needs Python 3.10+, and the Rust compiler from
