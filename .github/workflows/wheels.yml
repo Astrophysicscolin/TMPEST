@@ -2,6 +2,11 @@ name: wheels
 
 on:
   workflow_dispatch:
+    inputs:
+      pypi_release:
+        description: "Release tag whose attached files go to PyPI (empty: build and upload to TestPyPI)"
+        required: false
+        default: ""
   push:
     tags: ["v*"]
 
@@ -51,7 +56,7 @@ jobs:
           path: dist
 
   publish-testpypi:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && inputs.pypi_release == ''
     needs: [wheels, sdist]
     runs-on: ubuntu-latest
     environment:
@@ -68,3 +73,20 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
+
+  publish-pypi:
+    if: github.event_name == 'workflow_dispatch' && inputs.pypi_release != ''
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/tmpest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - run: gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir dist --pattern "*.whl" --pattern "*.tar.gz"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.pypi_release }}
+      - run: ls -l dist && sha256sum dist/*
+      - uses: pypa/gh-action-pypi-publish@release/v1
